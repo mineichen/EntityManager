@@ -9,10 +9,10 @@ class Observer implements ObserverInterface
     private $subject;
     private $pristineData;
     
-    public function __construct(Observable $spyable)
+    public function __construct(Observable $subject)
     {
-        $this->subject = $spyable;
-        $this->pristineData = $spyable->asArray();
+        $this->subject = $subject;
+        $this->pristineData = $subject->asArray();
     }
     
     public function getSubject()
