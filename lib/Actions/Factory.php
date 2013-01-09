@@ -5,7 +5,6 @@ namespace mineichen\entityManager\actions;
 use mineichen\entityManager\Exception;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\entityObserver\Factory as ObserverFactory;
-use mineichen\entityManager\entityObserver\Observable;
 
 class Factory 
 {
@@ -18,7 +17,7 @@ class Factory
         $this->saver = $saver;
     }
     
-    public function getInstanceFor(Observable $subject, $type)
+    public function getInstanceFor($subject, $type)
     {
         switch ($type) {
             case 'create':
@@ -28,8 +27,7 @@ class Factory
                 );
             case 'update':
                 return new \mineichen\entityManager\actions\Update(
-                    $subject, 
-                    $this->saver, 
+                    $this->saver,
                     $this->observerFactory->getInstanceFor($subject)
                 );
         }

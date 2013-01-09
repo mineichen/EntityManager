@@ -2,7 +2,6 @@
 
 namespace mineichen\entityManager\repository;
 
-use mineichen\entityManager\entityObserver\Observable;
 use mineichen\entityManager\Loader;
 use mineichen\entityManager\EntityManager;
 use mineichen\entityManager\ActionPriorityGenerator;
@@ -27,7 +26,7 @@ class EntityRepository
         $this->sandbox = $sandbox;
     }        
     
-    public function persist(Observable $subject)
+    public function persist(Managable $subject)
     {
         $this->attach($subject, 'create');
     }
@@ -53,7 +52,7 @@ class EntityRepository
         return $subject;
     }
     
-    public function isRegistered(Observable $subject)
+    public function isRegistered(Managable $subject)
     {
         return $this->getSandbox()->isRegistered($subject);
     }
@@ -68,9 +67,9 @@ class EntityRepository
         return $this->getSandbox()->getDirtyRecords();
     }
     
-    public function flushEntity(Observable $observable)
+    public function flushEntity(Managable $subject)
     {
-        $this->getSandbox()->performAction($observable);
+        $this->getSandbox()->performAction($subject);
     }
     
     public function appendChangesTo(ActionPriorityGenerator $generator)

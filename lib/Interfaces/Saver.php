@@ -2,11 +2,11 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entityObserver\Observable;
+use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\entityObserver\Observer;
 
 interface Saver {
-    public function create(Observable $observable);
+    public function create(Managable $observable);
     public function update(Observer $observer);
-    public function remove(Observable $observable);
+    public function remove(Observer $observer);
 }

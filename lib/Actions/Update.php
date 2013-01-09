@@ -3,17 +3,14 @@
 namespace mineichen\entityManager\actions;
 
 use mineichen\entityManager\entityObserver\Observer;
-use mineichen\entityManager\entityObserver\Observable;
 use mineichen\entityManager\Saver;
 
 class Update implements Action
 {
-    private $subject;
     private $saver;
     private $observer;
     
-    public function __construct(Observable $subject, Saver $saver, Observer $observer) {
-        $this->subject = $subject;
+    public function __construct(Saver $saver, Observer $observer) {
         $this->saver = $saver;
         $this->observer = $observer;
     }
@@ -22,7 +19,6 @@ class Update implements Action
     {
         if ($this->hasNeedForAction()) {
             return $this->saver->update(
-                //$subject,
                 $this->observer
             );
         }

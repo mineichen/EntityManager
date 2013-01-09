@@ -3,10 +3,9 @@
 namespace mineichen\entityManager;
 
 require_once __DIR__ . '/lib/autoload.php';
-require_once __DIR__ . '/demo/Foo.php';
+require_once __DIR__ . '/tests/autoload.php';
 require_once __DIR__ . '/demo/FooSaver.php';
 require_once __DIR__ . '/demo/FooLoader.php';
-require_once __DIR__ . '/demo/Bar.php';
 require_once __DIR__ . '/demo/BarSaver.php';
 require_once __DIR__ . '/demo/BarLoader.php';
 

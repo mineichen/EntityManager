@@ -3,9 +3,10 @@
 namespace mineichen\entityManager;
 
 use mineichen\entityManager\entityObserver\asArray\Observable;
+use mineichen\entityManager\repository\Managable;
 
 
-class Bar implements Observable, DependencyAware
+class Bar implements Observable, Managable, DependencyAware
 {
     use entityObserver\IdTrait;
     

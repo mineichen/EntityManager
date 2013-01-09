@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\repository;
 
-use mineichen\entityManager\entityObserver\Observable;
+use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\ActionPriorityGenerator;
 
 class RepositorySandbox
@@ -71,24 +71,24 @@ class RepositorySandbox
     {  
         return array_filter(
             iterator_to_array($this->records),
-            function(Observable $subject) {
+            function(Managable $subject) {
                 return $this->getRecordFor($subject)->isDirty();
             }
         );
     }
     
-    public function isRegistered(Observable $subject)
+    public function isRegistered(Managable $subject)
     {
         return $this->matchesType($subject)
             && $this->hasRecordFor($subject);
     }
     
-    public function performAction(Observable $subject)
+    public function performAction(Managable $subject)
     {
          $this->getRecordFor($subject)->performAction();
     }
     
-    public function attach($subject, $actionType)
+    public function attach(Managable $subject, $actionType)
     {
         if ($this->hasRecordFor($subject)) {
             return;
@@ -107,7 +107,7 @@ class RepositorySandbox
     {
         return array_filter(
             iterator_to_array($this->records),
-            function(Observable $subject) use ($id) {
+            function(Managable $subject) use ($id) {
                 return $subject->hasId() && $subject->getId() === $id;
             }
         );
@@ -118,17 +118,17 @@ class RepositorySandbox
         $this->records->attach($record->getSubject(), $record);
     }
     
-    private function getRecordFor(Observable $subject)
+    private function getRecordFor(Managable $subject)
     {
         return $this->records->offsetGet($subject);
     }
     
-    private function hasRecordFor(Observable $subject)
+    private function hasRecordFor(Managable $subject)
     {
         return $this->records->offsetExists($subject);
     }
     
-    private function matchesType(Observable $subject)
+    private function matchesType(Managable $subject)
     {
         return $subject->getType() === $this->entityType;
     }

@@ -44,7 +44,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $id = 33;
         
-        $subject = $this->getMock('mineichen\\entityManager\\entityObserver\\Observable');
+        $subject = $this->getMock(__NAMESPACE__ . '\\Managable');
         $this->recordManager
             ->expects($this->once())
             ->method('fetchSubjectForId')

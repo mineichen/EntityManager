@@ -28,7 +28,7 @@ class EntityManager
         return array_key_exists($type, $this->repos);
     }
     
-    public function persist(entityObserver\Observable $subject)
+    public function persist(repository\Managable $subject)
     {
         $this->getRepository($subject->getType())->persist($subject);
     }
@@ -38,7 +38,7 @@ class EntityManager
         return $this->getRepository($type)->find($id);
     }
     
-    public function isRegistered(entityObserver\Observable $subject)
+    public function isRegistered(repository\Managable $subject)
     {
         return $this->getRepository($subject->getType())->isRegistered($subject);
     }
@@ -54,7 +54,7 @@ class EntityManager
         return false;
     }
     
-    public function flushEntity(entityObserver\Observable $subject)
+    public function flushEntity(repository\Managable $subject)
     {
         $this->getRepository($subject->getType())->flushEntity($subject);
     }

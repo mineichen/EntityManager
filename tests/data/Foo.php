@@ -3,8 +3,9 @@
 namespace mineichen\entityManager;
 
 use mineichen\entityManager\entityObserver\asArray\Observable;
+use mineichen\entityManager\repository\Managable;
 
-class Foo implements Observable
+class Foo implements Observable, Managable
 {
     use entityObserver\IdTrait;
     

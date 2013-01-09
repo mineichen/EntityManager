@@ -2,12 +2,12 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entityObserver\Observable;
+use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\entityObserver\Observer;
 
 class BarSaver implements Saver
 {
-    public function create(Observable $observable)
+    public function create(Managable $observable)
     {
         echo sprintf('Erstelle "%s"', $observable->getType()) . PHP_EOL;
     }
@@ -17,7 +17,7 @@ class BarSaver implements Saver
         echo sprintf('Update "%s"', $observer->getSubject()->getType()) . PHP_EOL;
     }
     
-    public function remove(Observable $observable)
+    public function remove(Observer $observer)
     {
         echo sprintf('Lösche "%s"', $observer->getSubject()->getType()) . PHP_EOL;
     }

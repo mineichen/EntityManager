@@ -42,14 +42,16 @@
         <exec executable="phpab">
             <arg value="--output" />
             <arg path="${basedir}/lib/autoload.php" />
-
             <arg path="${basedir}/lib" />
         </exec>
         <exec executable="phpab">
             <arg value="--output" />
             <arg path="${basedir}/tests/autoload.php" />
 
-            <arg path="${basedir}/tests/helpers" />
+            <arg value="--basedir" />
+            <arg path="${basedir}/tests" />
+
+            <arg path="${basedir}/tests/data" />
         </exec>
     </target>
     <target name="lint">

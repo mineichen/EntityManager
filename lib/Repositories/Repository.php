@@ -12,5 +12,5 @@
 interface ObjectRepository {
     public function find($id);
     public function findAll();
-    public function persist(Observable $subject);
+    public function persist(Managable $subject);
 }

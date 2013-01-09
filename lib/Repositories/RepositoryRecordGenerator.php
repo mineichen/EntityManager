@@ -3,7 +3,6 @@
 namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\actions;
-use mineichen\entityManager\entityObserver;
 
 class RepositoryRecordGenerator 
 {
@@ -14,7 +13,7 @@ class RepositoryRecordGenerator
         $this->actionFactory = $actionFactory;
     }
     
-    public function create(entityObserver\Observable $subject, $actionType)
+    public function create(Managable $subject, $actionType)
     {
         return new RepositoryRecord(
             $subject,

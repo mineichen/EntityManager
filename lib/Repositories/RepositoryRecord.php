@@ -2,9 +2,6 @@
 
 namespace mineichen\entityManager\repository;
 
-use mineichen\entityManager\actions\Action;
-use mineichen\entityManager\entityObserver\Observable;
-use mineichen\entityManager\Saver;
 use mineichen\entityManager\actions\Factory as ActionFactory;
 
 class RepositoryRecord 
@@ -13,7 +10,7 @@ class RepositoryRecord
     private $action;
     private $actionFactory;
     
-    public function __construct(Observable $subject, ActionFactory $actionFactory, $actionType)
+    public function __construct(Managable $subject, ActionFactory $actionFactory, $actionType)
     {
         $this->subject = $subject;
         $this->actionFactory = $actionFactory;

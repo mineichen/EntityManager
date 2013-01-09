@@ -8,7 +8,8 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $entity = $this->mockEntity('Bar', 10);
+        $entity = new Bar('', '');
+        $entity->setId(10);
         
         $manager = $this->createEntityManager(array('Bar', $saver, $loader));
                 
@@ -30,7 +31,8 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $entity = $this->mockEntity('Bar', 10);
+        $entity = new Bar('','');
+        $entity->setId(10);
         
         $manager = $this->createEntityManager(array('Bar', $saver, $loader));
         
@@ -54,7 +56,8 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $entity = $this->mockEntity('Bar', 10);
+        $entity = new Bar('','');
+        $entity->setId(10);
         
         $manager = $this->createEntityManager(array('Bar', $saver, $loader));
         
@@ -73,16 +76,17 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     
     public function testSavesDependencyBeforeSubject()
     {
-        $dependency = $this->mockEntity('Dep');
-        $subject = $this->mockEntity('Sub', null, null, array($dependency));
+        $dependency = new Foo('', '');
+        $subject = new Bar('', '');
+        $subject->setFoo($dependency);
         
         $subloader = $this->mockLoader();
         $deploader = $this->mockLoader();
         $saver = $this->mockSaver();
         
         $manager = $this->createEntityManager(
-                array('Sub', $saver, $subloader),
-                array('Dep', $saver, $deploader)
+                array('Bar', $saver, $subloader),
+                array('Foo', $saver, $deploader)
         );
         
         $saver
@@ -100,7 +104,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
                 return $observable === $subject;
             })
         );
-       
         
         $manager->persist($subject);
         $manager->flush();
@@ -132,37 +135,4 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMock('mineichen\\entityManager\\Saver');
     }
-    
-    private function mockEntity($type, $id = null, $asArray = array(), $deps = null)
-    {
-        if ($deps === null) {
-            $entity = $this->getMock('mineichen\\entityManager\\Entity');
-        } else {
-            $entity = $this->getMock('mineichen\\entityManager\\DependencyAwareEntity');
-        }
-        
-        $entity->expects($this->any())
-                ->method('hasId')
-                ->will($this->returnValue($id !== null));
-        
-        $entity->expects($this->any())
-                ->method('getId')
-                ->will($this->returnValue($id));
-        
-        $entity->expects($this->any())
-               ->method('getType')
-               ->will($this->returnValue($type));
-        
-        $entity->expects($this->any())
-                ->method('asArray')
-                ->will($this->returnValue($asArray));
-        
-        if ($entity instanceof DependencyAware) {
-             $entity->expects($this->any())
-                ->method('getDependencies')
-                ->will($this->returnValue($deps));
-        }
-        
-        return $entity;
-    }    
 }
