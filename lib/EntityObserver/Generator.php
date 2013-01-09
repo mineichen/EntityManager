@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\entityObserver;
 
-interface Factory 
+interface Generator
 {
     public function getInstanceFor($subject);
 }

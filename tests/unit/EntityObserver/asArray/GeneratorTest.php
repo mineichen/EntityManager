@@ -8,13 +8,13 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->generator = new Factory;
+        $this->generator = new Generator;
         
     }
     
     public function testImplementsObservable()
     {
-        $this->assertInstanceOf('mineichen\\entityManager\\entityObserver\\Factory', $this->generator);
+        $this->assertInstanceOf('mineichen\\entityManager\\entityObserver\\Generator', $this->generator);
     }
     
     
@@ -29,7 +29,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     public function testReturnAsArrayObserver()
     {
         $this->assertInstanceOf(
-            __NAMESPACE__ . '\\Observer',
+            'mineichen\\entityManager\\entityObserver\\Observer',
             $this->generator->getInstanceFor(
                 $this->getMock(__NAMESPACE__ . '\\Observable')        
             )

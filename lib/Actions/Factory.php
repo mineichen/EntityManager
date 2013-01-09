@@ -4,7 +4,7 @@ namespace mineichen\entityManager\actions;
 
 use mineichen\entityManager\Exception;
 use mineichen\entityManager\Saver;
-use mineichen\entityManager\entityObserver\Factory as ObserverFactory;
+use mineichen\entityManager\entityObserver\Generator as ObserverFactory;
 
 class Factory 
 {

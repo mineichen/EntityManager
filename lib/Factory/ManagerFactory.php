@@ -47,7 +47,7 @@ abstract class ManagerFactory
     protected function getObserverFactory()
     {
         if (!$this->observerFactory) {
-            $this->observerFactory = new entityObserver\asArray\Factory();
+            $this->observerFactory = new entityObserver\asArray\Generator();
         }
         
         return $this->observerFactory;

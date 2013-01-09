@@ -2,10 +2,10 @@
 
 namespace mineichen\entityManager\entityObserver\asArray;
 
-use mineichen\entityManager\entityObserver\Factory as GeneratorInterface;
+use mineichen\entityManager\entityObserver\Generator as GeneratorInterface;
 use mineichen\entityManager\entityObserver\GeneratorException as Exception;
 
-class Factory implements GeneratorInterface
+class Generator implements GeneratorInterface
 {
     public function getInstanceFor($subject)
     {
