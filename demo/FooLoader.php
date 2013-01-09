@@ -7,22 +7,6 @@ use mineichen\entityManager\entityObserver\Observer;
 
 class FooLoader implements Loader
 {
-    private $repository;
-    
-    protected function getRepository()
-    {
-        if (!$this->repository) {
-            throw new Exception(sprintf('No repository found in "%s"', get_class($this)));
-        }
-        
-        return $this->repository;
-    }
-    
-    public function setRepository($repository)
-    {
-        $this->repository = $repository;
-    }
-    
     private $data = array(
         1 => array('id' => 1, 'firstname' => 'Hans', 'lastname' => 'Muster'),
         2 => array('id' => 2, 'firstname' => 'Sepp', 'lastname' => 'Träsch')

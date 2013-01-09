@@ -7,22 +7,6 @@ use mineichen\entityManager\entityObserver\Observer;
 
 class BarLoader implements Loader
 {
-    private $repository;
-    
-    protected function getRepository()
-    {
-        if (!$this->repository) {
-            throw new Exception(sprintf('No repository found in "%s"', get_class($this)));
-        }
-        
-        return $this->repository;
-    }
-    
-    public function setRepository($repository)
-    {
-        $this->repository = $repository;
-    }
-    
     private $data = array(
         array('firstname' => 'Hans', 'lastname' => 'Muster'),
         array('firstname' => 'Sepp', 'lastname' => 'Träsch')
