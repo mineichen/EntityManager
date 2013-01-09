@@ -36,7 +36,7 @@ class EntityRepository
     {
         $this->manager = $manager;
         
-        if (!$manager->hasRepository($this->getEntityType()) != null) {
+        if (!$manager->hasRepository($this->getEntityType())) {
             $this->manager->addRepository($this);
         }
     }
@@ -101,7 +101,7 @@ class EntityRepository
     protected function getEntityManager()
     {
         if (!($this->manager instanceof EntityManager)) {
-            throw new Exception('Repository wurde mit keinem Manager Verknüpft!');
+            throw new Exception('Repository needs to be linked with a Manager to perform this Action!');
         }
         
         return $this->manager;

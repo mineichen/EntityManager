@@ -79,7 +79,7 @@ class ActionPriorityGenerator
     private function avoidEndlessLoop($subject)
     {
         if ($this->cacheObjectStorage->contains($subject)) {
-            throw new Exception('Endlosschleife');
+            throw new Exception('Endless Recursion');
         }
         
         $this->cacheObjectStorage->attach($subject);

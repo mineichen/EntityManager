@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager;
+namespace mineichen\entityManager\repository;
 
 interface Managable {
     public function getId();

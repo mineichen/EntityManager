@@ -1,6 +1,7 @@
 <?php
 
 namespace mineichen\entityManager\repository;
+
 use mineichen\entityManager\actions;
 use mineichen\entityManager\entityObserver;
 
