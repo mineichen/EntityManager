@@ -4,7 +4,6 @@
 <phpunit bootstrap="tests/bootstrap.php"
          backupGlobals="false"
          backupStaticAttributes="false"
-         strict="true"
          colors="true"
          verbose="true">
   <testsuites>
@@ -26,7 +25,6 @@
     <whitelist addUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">src</directory>
       <exclude>
-
         <file>lib/autoload.php</file>
       </exclude>
     </whitelist>
