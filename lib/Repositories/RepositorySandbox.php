@@ -1,8 +1,9 @@
 <?php
 
-namespace mineichen\entityManager;
+namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\entityObserver\Observable;
+use mineichen\entityManager\ActionPriorityGenerator;
 
 class RepositorySandbox
 {

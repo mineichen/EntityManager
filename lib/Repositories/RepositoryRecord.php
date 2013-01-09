@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager;
+namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\actions\Action;
 use mineichen\entityManager\entityObserver\Observable;

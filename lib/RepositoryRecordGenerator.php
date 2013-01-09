@@ -1,6 +1,8 @@
 <?php
 
-namespace mineichen\entityManager;
+namespace mineichen\entityManager\repository;
+use mineichen\entityManager\actions;
+use mineichen\entityManager\entityObserver;
 
 class RepositoryRecordGenerator 
 {

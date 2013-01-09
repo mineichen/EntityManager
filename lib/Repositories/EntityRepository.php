@@ -1,10 +1,13 @@
 <?php
 
-namespace mineichen\entityManager;
+namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\entityObserver\Observable;
+use mineichen\entityManager\Loader;
+use mineichen\entityManager\EntityManager;
+use mineichen\entityManager\ActionPriorityGenerator;
 
-class EntityRepository 
+class EntityRepository
 {
     /**
      * @var \mineichen\entityManager\Loader
@@ -14,14 +17,14 @@ class EntityRepository
     /**
      * @var \mineichen\entityManager\RepositorySandbox
      */
-    private $recordManager;
+    private $sandbox;
     
     private $manager;
     
-    public function __construct(Loader $loader, RepositorySandbox $recordManager)
+    public function __construct(Loader $loader, RepositorySandbox $sandbox)
     {
         $this->loader = $loader;
-        $this->recordManager = $recordManager;
+        $this->sandbox = $sandbox;
     }        
     
     public function persist(Observable $subject)
@@ -40,62 +43,59 @@ class EntityRepository
     
     public function find($id)
     {
-        $record = $this->fetchSubjectForId($id);
+        $subject = $this->fetchSubjectForId($id);
         
-        if ($record !== false) {
-            return $record;
+        if ($subject === false) {
+            $subject = $this->loader->load($id);
+            $this->attach($subject, 'update');
         }
-
-        $entity = $this->loader->load($id);
-        $this->attach($entity, 'update');
         
-        return $entity;
+        return $subject;
     }
     
     public function isRegistered(Observable $subject)
     {
-        return $this->getRecordManager()->isRegistered($subject);
+        return $this->getSandbox()->isRegistered($subject);
     }
     
     public function hasNeedForFlush()
     {
-        return (bool) $this->getRecordManager()->getDirtyRecords();
+        return (bool) $this->getSandbox()->getDirtyRecords();
     }
     
     public function getDirtyRecords()
     {
-        return $this->getRecordManager()->getDirtyRecords();
+        return $this->getSandbox()->getDirtyRecords();
     }
     
     public function flushEntity(Observable $observable)
     {
-        $this->getRecordManager()->performAction($observable);
+        $this->getSandbox()->performAction($observable);
     }
     
     public function appendChangesTo(ActionPriorityGenerator $generator)
     {
-        $this->getRecordManager()->appendChangesTo($generator);
+        $this->getSandbox()->appendChangesTo($generator);
     }
     
     public function getEntityType()
     {
-        return $this->getRecordManager()->getEntityType();
+        return $this->getSandbox()->getEntityType();
     }
     
     protected function attach($subject, $actionType)
     {
-        $this->getRecordManager()->attach($subject, $actionType);
-        $this->getRecordManager()->attach($subject, $actionType);
+        $this->getSandbox()->attach($subject, $actionType);
     }
     
     protected function fetchSubjectForId($id)
     {
-        return $this->getRecordManager()->fetchSubjectForId($id);
+        return $this->getSandbox()->fetchSubjectForId($id);
     }
     
-    protected function getRecordManager()
+    protected function getSandbox()
     {
-        return $this->recordManager;
+        return $this->sandbox;
     }
     
     protected function getEntityManager()

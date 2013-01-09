@@ -15,15 +15,15 @@ abstract class ManagerFactory
     
     protected function getDefaultRepository($entityType, Saver $backend, Loader $loader)
     {
-        return new EntityRepository(
+        return new repository\EntityRepository(
             $loader,
-            $this->getRecordManager($backend, $entityType)
+            $this->getRepositorySandbox($backend, $entityType)
         );
     }
     
-    protected function getRecordManager($saver, $entityType)
+    protected function getRepositorySandbox($saver, $entityType)
     {
-        return new RepositorySandbox(
+        return new repository\RepositorySandbox(
             $this->getRepositoryRecordGenerator($saver),
             $entityType
         );
@@ -31,7 +31,7 @@ abstract class ManagerFactory
     
     protected function getRepositoryRecordGenerator($saver)
     {
-        return new RepositoryRecordGenerator(
+        return new repository\RepositoryRecordGenerator(
             $this->getActionFactory($saver)
         );
     }

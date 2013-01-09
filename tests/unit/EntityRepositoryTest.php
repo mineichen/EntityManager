@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager;
+namespace mineichen\entityManager\repository;
 
 class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->loader = $this->getMock(__NAMESPACE__ . '\\Loader');
+        $this->loader = $this->getMock('mineichen\\entityManager\\Loader');
         $this->recordManager = $this->getMockBuilder(__NAMESPACE__ . '\\RepositorySandbox')->disableOriginalConstructor()->getMock();
         
         $this->repository = new EntityRepository(
@@ -26,7 +26,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $id = 33;
         
-        $subject = $this->getMock(__NAMESPACE__ . '\\entityObserver\\Observable');
+        $subject = $this->getMock('mineichen\\entityManager\\entityObserver\\Observable');
         $this->recordManager
             ->expects($this->once())
             ->method('fetchSubjectForId')
@@ -44,7 +44,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $id = 33;
         
-        $subject = $this->getMock(__NAMESPACE__ . '\\entityObserver\\Observable');
+        $subject = $this->getMock('mineichen\\entityManager\\entityObserver\\Observable');
         $this->recordManager
             ->expects($this->once())
             ->method('fetchSubjectForId')

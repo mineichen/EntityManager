@@ -2,11 +2,13 @@
 
 namespace mineichen\entityManager;
 
+use mineichen\entityManager\repository\RepositoryRecord;
+
 class EntityManager 
 {
     private $repos = array();
 
-    public function addRepository(EntityRepository $repo)
+    public function addRepository(repository\EntityRepository $repo)
     {
         $this->repos[$repo->getEntityType()] = $repo;
         $repo->setEntityManager($this);
