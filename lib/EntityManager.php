@@ -36,11 +36,6 @@ class EntityManager
         return $this->getRepository($type)->find($id);
     }
     
-    public function findAll($type)
-    {
-        return $this->getRepository($type)->findAll();
-    }
-    
     public function isRegistered(entityObserver\Observable $subject)
     {
         return $this->getRepository($subject->getType())->isRegistered($subject);

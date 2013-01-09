@@ -12,13 +12,13 @@ class EntityRepository
     private $loader;
     
     /**
-     * @var \mineichen\entityManager\RecordManager
+     * @var \mineichen\entityManager\RepositorySandbox
      */
     private $recordManager;
     
     private $manager;
     
-    public function __construct(Loader $loader, RecordManager $recordManager)
+    public function __construct(Loader $loader, RepositorySandbox $recordManager)
     {
         $this->loader = $loader;
         $this->recordManager = $recordManager;
@@ -45,7 +45,7 @@ class EntityRepository
         if ($record !== false) {
             return $record;
         }
-        //echo PHP_EOL . PHP_EOL . 'LOADED' . PHP_EOL . PHP_EOL;
+
         $entity = $this->loader->load($id);
         $this->attach($entity, 'update');
         

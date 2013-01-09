@@ -23,7 +23,7 @@ abstract class ManagerFactory
     
     protected function getRecordManager($saver, $entityType)
     {
-        return new RecordManager(
+        return new RepositorySandbox(
             $this->getRepositoryRecordGenerator($saver),
             $entityType
         );

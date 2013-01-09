@@ -4,7 +4,7 @@ namespace mineichen\entityManager;
 
 use mineichen\entityManager\entityObserver\Observable;
 
-class RecordManager 
+class RepositorySandbox
 {
     /**
      * @var \SplObjectStorage

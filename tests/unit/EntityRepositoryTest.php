@@ -12,7 +12,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->loader = $this->getMock(__NAMESPACE__ . '\\Loader');
-        $this->recordManager = $this->getMockBuilder(__NAMESPACE__ . '\\RecordManager')->disableOriginalConstructor()->getMock();
+        $this->recordManager = $this->getMockBuilder(__NAMESPACE__ . '\\RepositorySandbox')->disableOriginalConstructor()->getMock();
         
         $this->repository = new EntityRepository(
             $this->loader,
