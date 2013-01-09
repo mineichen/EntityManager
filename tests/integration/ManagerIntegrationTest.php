@@ -14,7 +14,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = $this->createEntityManager(array('Bar', $saver, $loader));
                 
         $loader->expects($this->once())
-            ->method('load')
+            ->method('find')
             ->with(10)
             ->will($this->returnValue($entity));
         
@@ -37,7 +37,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = $this->createEntityManager(array('Bar', $saver, $loader));
         
         $loader->expects($this->once())
-            ->method('load')
+            ->method('find')
             ->with(10)
             ->will($this->returnValue($entity));
         
@@ -62,7 +62,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = $this->createEntityManager(array('Bar', $saver, $loader));
         
         $loader->expects($this->once())
-            ->method('load')
+            ->method('find')
             ->with(10)
             ->will($this->returnValue($entity));
         

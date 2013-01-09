@@ -35,7 +35,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
        
         $this->loader
             ->expects($this->never())
-            ->method('load');
+            ->method('find');
         
         $this->assertSame($subject, $this->repository->find($id));
     }
@@ -53,7 +53,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         
         $this->loader
             ->expects($this->once())
-            ->method('load')
+            ->method('find')
             ->with($id)
             ->will($this->returnValue($subject));
         

@@ -12,11 +12,11 @@ class FooLoader implements Loader
         2 => array('id' => 2, 'firstname' => 'Sepp', 'lastname' => 'Träsch')
     );
     
-    public function load($id) {
+    public function find($id) {
         return $this->loadWithData($this->data[$id]);
     }
     
-    public function loadAll()
+    public function findBy()
     {
         return array_map(
             function($data) {

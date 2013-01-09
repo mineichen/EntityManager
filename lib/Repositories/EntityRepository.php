@@ -28,7 +28,7 @@ class EntityRepository
     
     public function persist(Managable $subject)
     {
-        $this->attach($subject, 'create');
+        $this->getSandbox()->attach($subject, 'create');
     }
     
     public function setEntityManager(EntityManager $manager)
@@ -42,11 +42,11 @@ class EntityRepository
     
     public function find($id)
     {
-        $subject = $this->fetchSubjectForId($id);
+        $subject = $this->getSandbox()->fetchSubjectForId($id);
         
         if ($subject === false) {
-            $subject = $this->loader->load($id);
-            $this->attach($subject, 'update');
+            $subject = $this->loader->find($id);
+            $this->getSandbox()->attach($subject, 'update');
         }
         
         return $subject;
@@ -81,17 +81,7 @@ class EntityRepository
     {
         return $this->getSandbox()->getEntityType();
     }
-    
-    protected function attach($subject, $actionType)
-    {
-        $this->getSandbox()->attach($subject, $actionType);
-    }
-    
-    protected function fetchSubjectForId($id)
-    {
-        return $this->getSandbox()->fetchSubjectForId($id);
-    }
-    
+
     protected function getSandbox()
     {
         return $this->sandbox;
