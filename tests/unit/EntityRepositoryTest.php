@@ -29,32 +29,8 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         $subject = $this->getMock('mineichen\\entityManager\\entityObserver\\Observable');
         $this->recordManager
             ->expects($this->once())
-            ->method('fetchSubjectForId')
-            ->with($id)
-            ->will($this->returnValue($subject));
-       
-        $this->loader
-            ->expects($this->never())
-            ->method('find');
-        
-        $this->assertSame($subject, $this->repository->find($id));
-    }
-    
-    public function testFindLoadsEntityIfNotLoaded()
-    {
-        $id = 33;
-        
-        $subject = $this->getMock(__NAMESPACE__ . '\\Managable');
-        $this->recordManager
-            ->expects($this->once())
-            ->method('fetchSubjectForId')
-            ->with($id)
-            ->will($this->returnValue(false));
-        
-        $this->loader
-            ->expects($this->once())
             ->method('find')
-            ->with($id)
+            ->with($id, $this->loader)
             ->will($this->returnValue($subject));
         
         $this->assertSame($subject, $this->repository->find($id));

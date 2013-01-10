@@ -5,6 +5,8 @@ namespace mineichen\entityManager\repository;
 use mineichen\entityManager\Loader;
 use mineichen\entityManager\EntityManager;
 use mineichen\entityManager\ActionPriorityGenerator;
+use mineichen\entityManager\proxy\Complementable;
+use mineichen\entityManager\proxy\Complementer;
 
 class EntityRepository
 {
@@ -17,15 +19,28 @@ class EntityRepository
      * @var \mineichen\entityManager\RepositorySandbox
      */
     private $sandbox;
-    
+    private $complementer;
     private $manager;
     
     public function __construct(Loader $loader, RepositorySandbox $sandbox)
     {
         $this->loader = $loader;
         $this->sandbox = $sandbox;
-    }        
-    
+    }
+
+    public function setComplementer(Complementer $complementer)
+    {
+        $this->complementer = $complementer;
+    }
+
+    public function getComplementer()
+    {
+        if (!($this->complementer instanceof Complementer)) {
+            throw new \mineichen\entityManager\Exception('Complementer not Found');
+        }
+        return $this->complementer;
+    }
+
     public function persist(Managable $subject)
     {
         $this->getSandbox()->attach($subject, 'create');
@@ -42,14 +57,27 @@ class EntityRepository
     
     public function find($id)
     {
-        $subject = $this->getSandbox()->fetchSubjectForId($id);
-        
-        if ($subject === false) {
-            $subject = $this->loader->find($id);
-            $this->getSandbox()->attach($subject, 'update');
-        }
-        
-        return $subject;
+        return $this->getSandbox()->find($id, $this->loader);
+    }
+
+    public function complement(Complementable $proxy)
+    {
+        $this->loader->complement($proxy);
+    }
+
+    public function findBy(array $config)
+    {
+        $entities = $this->loader->findBy($config);
+        array_walk(
+            $entities,
+            function($entity) {
+                if ($entity instanceof Complementable) {
+                    $entity->setComplementer($this->complementer);
+                }
+            }
+        );
+
+        return $entities;
     }
     
     public function isRegistered(Managable $subject)
@@ -61,7 +89,7 @@ class EntityRepository
     {
         return (bool) $this->getSandbox()->getDirtyRecords();
     }
-    
+
     public function getDirtyRecords()
     {
         return $this->getSandbox()->getDirtyRecords();

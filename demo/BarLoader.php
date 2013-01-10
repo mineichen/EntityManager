@@ -16,7 +16,7 @@ class BarLoader implements Loader
         return $this->loadWithData($this->data[$id]);
     }
     
-    public function findBy()
+    public function findBy(array $options)
     {
         return array_map(
             function($data) {

@@ -42,7 +42,18 @@ class RepositorySandbox
     {
         $generator->appendChanges($this->records);
     }
-    
+
+    public function find($id, $loader) {
+        $subject = $this->fetchSubjectForId($id);
+
+        if ($subject === false) {
+            $subject = $loader->find($id);
+            $this->attach($subject, 'update');
+        }
+
+        return $subject;
+    }
+
     public function fetchSubjectForId($id)
     {
         $result = $this->getSubjectsForId($id);

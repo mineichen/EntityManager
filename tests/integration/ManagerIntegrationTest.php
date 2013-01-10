@@ -108,22 +108,67 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager->persist($subject);
         $manager->flush();
     }
-    
-    
+
+    public function testProxyEntity()
+    {
+        $foo = new Foo('baz', 'bat');
+        $foo->setId(1234);
+        $foo->setValueToComplement($this->getMock('mineichen\entityManager\proxy\NotLoaded'));
+
+        $completeFoo = new Foo('completeBaz', 'completeBat');
+        $completeFoo->setId(1234);
+        $completeFoo->setValueToComplement('complementValue');
+
+
+        $loader = $this->mockLoader();
+        $saver = $this->mockSaver();
+        $complementer = new proxy\FooComplementer($loader);
+
+        $manager = $this->createEntityManager(
+            array('Foo', $saver, $loader, $complementer)
+        );
+
+        $loader->expects($this->once())
+            ->method('findBy')
+            ->will($this->returnValue(array($foo)));
+
+        $loader->expects($this->once())
+            ->method('find')
+            ->with(1234)
+            ->will($this->returnValue($completeFoo));
+
+
+        $entity = $manager->findBy('Foo', array())[0];
+
+        $this->assertEquals('complementValue', $entity->getValueToComplement());
+
+    }
+
     private function createEntityManager()
     {
         $config = array();
         
         foreach (func_get_args() as $arg) {
-            $config[] = array(
+            $record = array(
                 'entityType' => $arg[0],
                 'saver' => $arg[1],
                 'loader' => $arg[2]
             );
+
+            if (array_key_exists(3, $arg)) {
+                $record['complementer'] = $arg[3];
+            }
+
+            $config[] = $record;
         }
         
         $factory = new ConfigFactory($config);
         return $factory->createManager();
+    }
+
+    private function mockComplementer()
+    {
+        return $this->getMock('mineichen\\entitiyManager\\proxy\\Complementer');
     }
     
     private function mockLoader()

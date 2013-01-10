@@ -1,16 +1,9 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace mineichen\entityManager\repository;
 
-/**
- *
- * @author dev
- */
 interface ObjectRepository {
     public function find($id);
-    public function findAll();
+    public function findBy(array $config);
     public function persist(Managable $subject);
 }

@@ -21,13 +21,17 @@ class ConfigFactory extends ManagerFactory
     protected function appendRepositories(EntityManager $manager)
     {
         foreach ($this->config as $config) {
-            $manager->addRepository(
-                $this->getDefaultRepository(
-                    $config['entityType'],
-                    $config['saver'],
-                    $config['loader']
-                )
+            $repo = $this->getDefaultRepository(
+                $config['entityType'],
+                $config['saver'],
+                $config['loader']
             );
+
+            if (array_key_exists('complementer', $config)) {
+                $repo->setComplementer($config['complementer']);
+            }
+
+            $manager->addRepository($repo);
         }
     }
 }

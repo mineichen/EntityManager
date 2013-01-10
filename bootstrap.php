@@ -1,6 +1,7 @@
 <?php
 
 namespace mineichen\entityManager;
+use mineichen\entityManager\proxy\FooComplementer;
 
 require_once __DIR__ . '/lib/autoload.php';
 require_once __DIR__ . '/tests/autoload.php';
@@ -11,11 +12,11 @@ require_once __DIR__ . '/demo/BarLoader.php';
 
 $factory = new ConfigFactory(array(
     array('entityType' => 'Bar', 'saver' => new BarSaver(), 'loader' => new BarLoader()),
-    array('entityType' => 'Foo', 'saver' => new FooSaver(), 'loader' => new FooLoader())
+    array('entityType' => 'Foo', 'saver' => new FooSaver(), 'loader' => new FooLoader(), 'complementer' => new FooComplementer(new FooLoader()))
 ));
 
 $manager = $factory->createManager();
-
+/*
 $foo = new Foo('Value1', 'Value2');
 $bar = new Bar('Hans', 'Muster');
 $bar->setFoo($foo);
@@ -46,3 +47,9 @@ echo PHP_EOL . PHP_EOL . '------------------------------------------------------
 
 $loadedfoo->setOptional(' ');
 echo 'Needs Flush: ' . (($manager->hasNeedForFlush()) ? 'Yes' : 'No');
+*/
+echo 'Start:' . PHP_EOL;
+$entity = $manager->findBy('Foo', array())[1];
+echo 'Incomplete Entity loaded' . PHP_EOL;
+
+var_dump($entity->getValueToComplement());
