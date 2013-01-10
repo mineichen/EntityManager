@@ -8,7 +8,7 @@ class EntityManager
 {
     private $repos = array();
 
-    public function addRepository(repository\EntityRepository $repo)
+    public function addRepository($repo)
     {
         $this->repos[$repo->getEntityType()] = $repo;
         $repo->setEntityManager($this);
@@ -36,6 +36,11 @@ class EntityManager
     public function find($type, $id) 
     {
         return $this->getRepository($type)->find($id);
+    }
+
+    public function findBy($type, array $config)
+    {
+        return $this->getRepository($type)->findBy($config);
     }
     
     public function isRegistered(repository\Managable $subject)

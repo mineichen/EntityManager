@@ -13,19 +13,12 @@ abstract class ManagerFactory
         return $manager;
     }
     
-    protected function getDefaultRepository($entityType, Saver $backend, Loader $loader)
-    {
-        return new repository\EntityRepository(
-            $loader,
-            $this->getRepositorySandbox($backend, $entityType)
-        );
-    }
-    
-    protected function getRepositorySandbox($saver, $entityType)
+    protected function getRepositorySandbox($entityType, Saver $saver, Loader $loader)
     {
         return new repository\RepositorySandbox(
             $this->getRepositoryRecordGenerator($saver),
-            $entityType
+            $entityType,
+            $loader
         );
     }
     

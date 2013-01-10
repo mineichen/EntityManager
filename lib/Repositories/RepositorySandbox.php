@@ -2,8 +2,13 @@
 
 namespace mineichen\entityManager\repository;
 
+use mineichen\entityManager\EntityManager;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\ActionPriorityGenerator;
+use mineichen\entityManager\proxy\Complementable;
+use mineichen\entityManager\proxy\Complementer;
+use mineichen\entityManager\Loader;
+
 
 class RepositorySandbox
 {
@@ -13,7 +18,7 @@ class RepositorySandbox
     private $records;
     
     /**
-     * @var \mineichen\entityManager\RepositoryRecordGenerator
+     * @var \mineichen\entityManager\repository\RepositoryRecordGenerator
      */
     private $recordGenerator;
     
@@ -21,37 +26,87 @@ class RepositorySandbox
      * @var string
      */
     private $entityType;
-    
+
     /**
-     * @param \mineichen\entityManager\RepositoryRecordGenerator $recordGenerator
-     * @param string $entityType
+     * @var Complementer
      */
-    public function __construct(RepositoryRecordGenerator $recordGenerator, $entityType)
+    private $complementer;
+
+    /**
+     * @var \mineichen\entityManager\EntityManager
+     */
+    private $manager;
+
+    /**
+     * @param RepositoryRecordGenerator $recordGenerator
+     * @param $entityType
+     * @param \mineichen\entityManager\Loader $loader
+     */
+    public function __construct(RepositoryRecordGenerator $recordGenerator, $entityType, Loader $loader)
     {
         $this->records = new \SplObjectStorage();
         $this->recordGenerator = $recordGenerator;
         $this->entityType = $entityType;
+        $this->loader = $loader;
     }
-    
+
+    /**
+     * @return string
+     */
     public function getEntityType()
     {
         return $this->entityType;
     }
-    
+
+    public function setComplementer(Complementer $complementer)
+    {
+        $this->complementer = $complementer;
+    }
+
+    public function getComplementer()
+    {
+        if (!($this->complementer instanceof Complementer)) {
+            throw new \mineichen\entityManager\Exception('Complementer not Found');
+        }
+        return $this->complementer;
+    }
+
+
     public function appendChangesTo(ActionPriorityGenerator $generator)
     {
         $generator->appendChanges($this->records);
     }
 
-    public function find($id, $loader) {
+    public function persist(Managable $subject)
+    {
+        $this->attach($subject, 'create');
+    }
+
+    public function find($id)
+    {
         $subject = $this->fetchSubjectForId($id);
 
         if ($subject === false) {
-            $subject = $loader->find($id);
+            $subject = $this->loader->find($id);
             $this->attach($subject, 'update');
         }
 
         return $subject;
+    }
+
+    public function findBy($config)
+    {
+        $entities = $this->loader->findBy($config);
+        array_walk(
+            $entities,
+            function($entity) {
+                if ($entity instanceof Complementable) {
+                    $entity->setComplementer($this->complementer);
+                }
+            }
+        );
+
+        return $entities;
     }
 
     public function fetchSubjectForId($id)
@@ -94,7 +149,7 @@ class RepositorySandbox
             && $this->hasRecordFor($subject);
     }
     
-    public function performAction(Managable $subject)
+    public function flushEntity(Managable $subject)
     {
          $this->getRecordFor($subject)->performAction();
     }
@@ -143,4 +198,23 @@ class RepositorySandbox
     {
         return $subject->getType() === $this->entityType;
     }
+
+    public function setEntityManager(EntityManager $manager)
+    {
+        $this->manager = $manager;
+
+        if (!$manager->hasRepository($this->getEntityType())) {
+            $this->manager->addRepository($this);
+        }
+    }
+
+    protected function getEntityManager()
+    {
+        if (!($this->manager instanceof EntityManager)) {
+            throw new Exception('Repository needs to be linked with a Manager to perform this Action!');
+        }
+
+        return $this->manager;
+    }
+
 }

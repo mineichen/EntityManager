@@ -21,7 +21,7 @@ class ConfigFactory extends ManagerFactory
     protected function appendRepositories(EntityManager $manager)
     {
         foreach ($this->config as $config) {
-            $repo = $this->getDefaultRepository(
+            $repo = $this->getRepositorySandbox(
                 $config['entityType'],
                 $config['saver'],
                 $config['loader']
