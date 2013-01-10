@@ -71,7 +71,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             ->method('save');
         
         $manager->find('Bar', 10);
-        $manager->flush();
     }
     
     public function testSavesDependencyBeforeSubject()
@@ -142,7 +141,69 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('complementValue', $entity->getValueToComplement());
 
+        /**
+         * Important!
+         */
+        $this->assertSame($foo, $entity);
+
+        return [$manager, $entity, $loader];
     }
+
+    /**
+     * @depends testProxyEntity
+     */
+    public function testFindByReturnsSameInstanceOnTheSecondTime($params)
+    {
+        $manager = $params[0];
+        $entity = $params[1];
+        $loader = $params[2];
+
+        $loader->expects($this->once())
+            ->method('findBy')
+            ->will($this->returnValue(array($entity)));
+
+        $this->assertSame($entity, $manager->findBy('Foo', array())[0]);
+    }
+
+    public function testEntitysLoadedWithLoadByAreFlushable()
+    {
+        $foo = new Foo('baz', 'bat');
+        $foo->setId(1234);
+        $foo->setValueToComplement($this->getMock('mineichen\entityManager\proxy\NotLoaded'));
+
+        $foo2 = new Foo('baz', 'bat');
+        $foo2->setId(12345);
+        $foo2->setValueToComplement($this->getMock('mineichen\entityManager\proxy\NotLoaded'));
+
+        $loader = $this->mockLoader();
+        $saver = $this->mockSaver();
+        $complementer = new proxy\FooComplementer($loader);
+
+        $manager = $this->createEntityManager(
+            array('Foo', $saver, $loader, $complementer)
+        );
+
+        $loader->expects($this->once())
+            ->method('findBy')
+            ->will($this->returnValue(array($foo, $foo2)));
+
+        $constraint = $this->callback(function($observer) use ($foo) {
+            return $observer->getSubject() === $foo;
+        });
+
+        $saver->expects($this->once())
+            ->method('update')
+            ->with($constraint);
+
+        $entity = $manager->findBy('Foo', array())[0];
+
+        $this->assertFalse($manager->hasNeedForFlush());
+        $entity->setBaz('newValueForTest');
+        $this->assertTrue($manager->hasNeedForFlush());
+
+        $manager->flush();
+    }
+
 
     private function createEntityManager()
     {

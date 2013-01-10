@@ -4,10 +4,9 @@ namespace mineichen\entityManager;
 
 use mineichen\entityManager\entityObserver\Observable;
 use mineichen\entityManager\entityObserver\Observer;
-use mineichen\entityManager\proxy\Complementer;
 use mineichen\entityManager\proxy\Complementable;
 
-class FooLoader implements Loader, Complementer
+class FooLoader implements Loader
 {
     private $data = array(
         1 => array('id' => 1, 'firstname' => 'Hans', 'lastname' => 'Muster', 'complementValue' => 'It works :)'),
@@ -22,22 +21,18 @@ class FooLoader implements Loader, Complementer
     public function findBy(array $options)
     {
         echo 'Do Load FindBy .......' . PHP_EOL;
-        return array_map(
-            function($data) {
-                $foo = $this->loadWithData($data);
+        $entities = [];
 
-                // Simulate incomplete Data
-                $foo->setValueToComplement(new \mineichen\entityManager\proxy\SimpleNotLoaded());
+        foreach($this->data as $data) {
+            $foo = $this->loadWithData($data);
 
-                return $foo;
-            }, 
-            $this->data
-        );
-    }
+            // Simulate incomplete Data
+            $foo->setValueToComplement(new \mineichen\entityManager\proxy\SimpleNotLoaded());
 
-    public function complement(Complementable $subject)
-    {
 
+            $entities[] =  $foo;
+        }
+        return $entities;
     }
     
     private function loadWithData(array $data)

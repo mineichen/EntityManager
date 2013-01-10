@@ -46,10 +46,19 @@ $manager->flush();
 echo PHP_EOL . PHP_EOL . '-------------------------------------------------------------------------' . PHP_EOL . PHP_EOL;
 
 $loadedfoo->setOptional(' ');
-echo 'Needs Flush: ' . (($manager->hasNeedForFlush()) ? 'Yes' : 'No');
 */
-echo 'Start:' . PHP_EOL;
-$entity = $manager->findBy('Foo', array())[1];
-echo 'Incomplete Entity loaded' . PHP_EOL;
+//echo 'Needs Flush: ' . (($manager->hasNeedForFlush()) ? 'Yes' : 'No') . PHP_EOL;
 
+//echo PHP_EOL . 'Start:' . PHP_EOL;
+$entity = $manager->findBy('Foo', array())[1];
+//echo 'Incomplete Entity loaded' . PHP_EOL;
+
+//$entity->setValueToComplement('MyNewValue');
 var_dump($entity->getValueToComplement());
+
+$sameEntityLoadedSecondTime = $manager->findBy('Foo', array())[1];
+/*
+echo ($sameEntityLoadedSecondTime === $entity) ? 'SIND GENAU GLEICH' : 'VERSCHIEDEN';
+
+echo PHP_EOL . 'Needs Flush: ' . (($manager->hasNeedForFlush()) ? 'Yes' : 'No') . PHP_EOL;
+*/

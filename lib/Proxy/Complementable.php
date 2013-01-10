@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\proxy;
 
-use mineichen\entityManager\repository\ObjectRepository;
+use mineichen\entityManager\repository\Repository;
 
 interface Complementable
 {

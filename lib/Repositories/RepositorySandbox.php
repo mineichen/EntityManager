@@ -10,7 +10,7 @@ use mineichen\entityManager\proxy\Complementer;
 use mineichen\entityManager\Loader;
 
 
-class RepositorySandbox
+class RepositorySandbox implements Repository
 {
     /**
      * @var \SplObjectStorage
@@ -58,25 +58,6 @@ class RepositorySandbox
         return $this->entityType;
     }
 
-    public function setComplementer(Complementer $complementer)
-    {
-        $this->complementer = $complementer;
-    }
-
-    public function getComplementer()
-    {
-        if (!($this->complementer instanceof Complementer)) {
-            throw new \mineichen\entityManager\Exception('Complementer not Found');
-        }
-        return $this->complementer;
-    }
-
-
-    public function appendChangesTo(ActionPriorityGenerator $generator)
-    {
-        $generator->appendChanges($this->records);
-    }
-
     public function persist(Managable $subject)
     {
         $this->attach($subject, 'create');
@@ -94,22 +75,43 @@ class RepositorySandbox
         return $subject;
     }
 
-    public function findBy($config)
+    public function findBy(array $config)
     {
-        $entities = $this->loader->findBy($config);
-        array_walk(
-            $entities,
-            function($entity) {
-                if ($entity instanceof Complementable) {
-                    $entity->setComplementer($this->complementer);
+        return array_map(
+            function($newEntity) {
+                $existing = $this->fetchSubjectForId($newEntity->getId());
+                if ($existing !== false) {
+                    //echo 'Load existing one more Time';
+                    return $existing;
                 }
-            }
-        );
 
-        return $entities;
+                if ($newEntity instanceof Complementable) {
+                    $newEntity->setComplementer($this->complementer);
+                }
+
+                $this->attach($newEntity, 'update');
+                return $newEntity;
+            },
+            $this->loader->findBy($config)
+        );
     }
 
-    public function fetchSubjectForId($id)
+    public function remove(Managable $subject)
+    {
+        throw new \mineichen\entityManager\Exception('Not yet implemented');
+    }
+
+    public function flushEntity(Managable $subject)
+    {
+        $this->getRecordFor($subject)->performAction();
+    }
+
+    public function appendChangesTo(ActionPriorityGenerator $generator)
+    {
+        $generator->appendChanges($this->records);
+    }
+
+    private function fetchSubjectForId($id)
     {
         $result = $this->getSubjectsForId($id);
         
@@ -117,7 +119,7 @@ class RepositorySandbox
             case 0:
                 return false;
             case 1;
-                return $result[0];
+                return array_values($result)[0];
             default:
                 throw new Exception(sprintf('Multiple Records with same ID "%s" registered!', $id));
         }
@@ -148,13 +150,13 @@ class RepositorySandbox
         return $this->matchesType($subject)
             && $this->hasRecordFor($subject);
     }
-    
-    public function flushEntity(Managable $subject)
+
+    public function hasNeedForFlush()
     {
-         $this->getRecordFor($subject)->performAction();
+        return (bool) $this->getDirtyRecords();
     }
     
-    public function attach(Managable $subject, $actionType)
+    private function attach(Managable $subject, $actionType)
     {
         if ($this->hasRecordFor($subject)) {
             return;
@@ -165,10 +167,6 @@ class RepositorySandbox
         );   
     }
     
-    /**
-     * @param string $id
-     * @return array
-     */
     private function getSubjectsForId($id)
     {
         return array_filter(
@@ -183,7 +181,11 @@ class RepositorySandbox
     {
         $this->records->attach($record->getSubject(), $record);
     }
-    
+
+    /**
+     * @param Managable $subject
+     * @return RepositoryRecord
+     */
     private function getRecordFor(Managable $subject)
     {
         return $this->records->offsetGet($subject);
@@ -208,7 +210,7 @@ class RepositorySandbox
         }
     }
 
-    protected function getEntityManager()
+    public function getEntityManager()
     {
         if (!($this->manager instanceof EntityManager)) {
             throw new Exception('Repository needs to be linked with a Manager to perform this Action!');
@@ -217,4 +219,16 @@ class RepositorySandbox
         return $this->manager;
     }
 
+    public function setComplementer(Complementer $complementer)
+    {
+        $this->complementer = $complementer;
+    }
+
+    public function getComplementer()
+    {
+        if (!($this->complementer instanceof Complementer)) {
+            throw new \mineichen\entityManager\Exception('Complementer not Found');
+        }
+        return $this->complementer;
+    }
 }
