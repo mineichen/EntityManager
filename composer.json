@@ -18,7 +18,7 @@
     },
     "minimum-stability": "dev",
     "autoload": {
-        "psr-0": { "": "lib/" }
+        "psr-0": { "classmap": ["lib/"] }
     },
     "extra": {
         "branch-alias": {
