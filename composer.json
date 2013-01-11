@@ -1,5 +1,5 @@
 {
-    "name": "mineichen/EntityManager",
+    "name": "mineichen/entity-manager",
     "minimum-stability": "dev",
     "version": "0.0.1",
     "description": "Simple EntityManager which provides",
