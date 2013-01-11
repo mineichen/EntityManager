@@ -6,6 +6,9 @@ use mineichen\entityManager\repository\RepositoryRecord;
 
 class EntityManager 
 {
+    /**
+     * @var array
+     */
     private $repos = array();
 
     public function addRepository($repo)
