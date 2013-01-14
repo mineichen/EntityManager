@@ -1,7 +1,6 @@
 {
-    "name": "mineichen/EntityManager",
+    "name": "mineichen/entity-manager",
     "minimum-stability": "dev",
-    "version": "0.0.3",
     "description": "Simple EntityManager which provides",
     "keywords": ["pubsup", "entityManager", "proxy", "entity"],
     "homepage": "https://github.com/mineichen/EntityManager",
