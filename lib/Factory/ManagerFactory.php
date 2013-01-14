@@ -22,7 +22,7 @@ abstract class ManagerFactory
         );
     }
     
-    protected function getRepositoryRecordGenerator($saver)
+    protected function getRepositoryRecordGenerator(Saver $saver)
     {
         return new repository\RepositoryRecordGenerator(
             $this->getActionFactory($saver)
@@ -46,5 +46,8 @@ abstract class ManagerFactory
         return $this->observerFactory;
     }
     
-    abstract protected function appendRepositories(EntityManager $manager);
+    protected function appendRepositories(EntityManager $manager)
+    {
+        
+    }
 }
