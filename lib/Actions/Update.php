@@ -24,6 +24,7 @@ class Update implements Action
             $this->saver->update(
                 $this->observer
             );
+            $this->identityMap->attach($this->getSubject(), 'update');
         }
     }
 
@@ -35,11 +36,6 @@ class Update implements Action
     public function hasNeedForAction()
     {
         return $this->observer->hasDiffs();
-    }
-    
-    public function getActionType()
-    {
-        return 'update';
     }
     
     public function commitAfterExecution()

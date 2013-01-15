@@ -20,9 +20,8 @@ class Delete implements Action
 
     public function performAction()
     {
-        $this->saver->delete(
-            $this->subject
-        );
+        $this->saver->delete($this->subject);
+        $this->identityMap->detach($this->subject);
     }
 
     public function getSubject()
@@ -33,11 +32,6 @@ class Delete implements Action
     public function hasNeedForAction()
     {
         return true;
-    }
-
-    public function getActionType()
-    {
-        return 'delete';
     }
 
     public function commitAfterExecution()

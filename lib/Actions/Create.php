@@ -22,16 +22,12 @@ class Create implements Action
     public function performAction()
     {
         $this->saver->create($this->subject);
+        $this->identityMap->attach($this->subject, 'update');
     }
     
     public function hasNeedForAction()
     {
         return true;
-    }
-    
-    public function getActionType()
-    {
-        return 'update';
     }
 
     public function getSubject()

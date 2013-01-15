@@ -26,10 +26,8 @@ class RepositoryRecord
     public function performAction()
     {
         $this->action->performAction();
-        $this->setAction($this->action->getActionType());
-        
     }
-    
+
     public function isDirty()
     {
         return $this->action->hasNeedForAction();
