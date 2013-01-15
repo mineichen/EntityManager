@@ -13,7 +13,7 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\actions\\delete' => '/Actions/Delete.php',
                 'mineichen\\entitymanager\\actions\\factory' => '/Actions/Factory.php',
                 'mineichen\\entitymanager\\actions\\update' => '/Actions/Update.php',
-                'mineichen\\entitymanager\\configfactory' => '/Factory/ConfigFactory.php',
+                'mineichen\\entitymanager\\configfactory' => '/Factory/ConfigManagerFactory.php',
                 'mineichen\\entitymanager\\dependencyaware' => '/DependencyAware.php',
                 'mineichen\\entitymanager\\entitymanager' => '/EntityManager.php',
                 'mineichen\\entitymanager\\entityobserver\\asarray\\generator' => '/EntityObserver/asArray/Generator.php',
@@ -25,7 +25,6 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\entityobserver\\observer' => '/EntityObserver/Observer.php',
                 'mineichen\\entitymanager\\exception' => '/Exception.php',
                 'mineichen\\entitymanager\\loader' => '/Repositories/Loader.php',
-                'mineichen\\entitymanager\\managerfactory' => '/Factory/ManagerFactory.php',
                 'mineichen\\entitymanager\\proxy\\complementable' => '/Proxy/Complementable.php',
                 'mineichen\\entitymanager\\proxy\\complementer' => '/Proxy/Complementer.php',
                 'mineichen\\entitymanager\\proxy\\exception' => '/Proxy/Exception.php',
@@ -37,6 +36,7 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\repository\\repository' => '/Repositories/Repository.php',
                 'mineichen\\entitymanager\\repository\\repositorysandbox' => '/Repositories/RepositorySandbox.php',
                 'mineichen\\entitymanager\\repositoryexception' => '/Repositories/RepositoryException.php',
+                'mineichen\\entitymanager\\repositoryfactory' => '/Factory/RepositoryFactory.php',
                 'mineichen\\entitymanager\\saver' => '/Repositories/Saver.php'
             );
         }

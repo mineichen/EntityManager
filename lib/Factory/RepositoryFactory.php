@@ -2,18 +2,11 @@
 
 namespace mineichen\entityManager;
 
-class ManagerFactory
+class RepositoryFactory
 {
     private $observerFactory;
     
-    public function createManager() 
-    {
-        $manager = new EntityManager();
-        $this->appendRepositories($manager);
-        return $manager;
-    }
-
-    public function getRepositorySandbox($entityType, Saver $saver, Loader $loader, $complementer = null)
+    public function get($entityType, Saver $saver, Loader $loader, $complementer = null)
     {
         $repo = new repository\RepositorySandbox(
             $this->getIdentityMap($saver),
@@ -50,10 +43,5 @@ class ManagerFactory
         }
         
         return $this->observerFactory;
-    }
-    
-    protected function appendRepositories(EntityManager $manager)
-    {
-
     }
 }

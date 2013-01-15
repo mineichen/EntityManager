@@ -10,12 +10,15 @@ require_once __DIR__ . '/demo/FooLoader.php';
 require_once __DIR__ . '/demo/BarSaver.php';
 require_once __DIR__ . '/demo/BarLoader.php';
 
-$factory = new ConfigFactory(array(
-    array('entityType' => 'Bar', 'saver' => new BarSaver(), 'loader' => new BarLoader()),
-    array('entityType' => 'Foo', 'saver' => new FooSaver(), 'loader' => new FooLoader(), 'complementer' => new FooComplementer(new FooLoader()))
-));
+$factory = new ConfigFactory(
+    array(
+        array('entityType' => 'Bar', 'saver' => new BarSaver(), 'loader' => new BarLoader()),
+        array('entityType' => 'Foo', 'saver' => new FooSaver(), 'loader' => new FooLoader(), 'complementer' => new FooComplementer(new FooLoader()))
+    ),
+    new RepositoryFactory()
+);
 
-$manager = $factory->createManager();
+$manager = $factory->get();
 /*
 $foo = new Foo('Value1', 'Value2');
 $bar = new Bar('Hans', 'Muster');
