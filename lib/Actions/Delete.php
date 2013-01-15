@@ -33,9 +33,4 @@ class Delete implements Action
     {
         return true;
     }
-
-    public function commitAfterExecution()
-    {
-        return false;
-    }
 }

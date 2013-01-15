@@ -37,9 +37,4 @@ class Update implements Action
     {
         return $this->observer->hasDiffs();
     }
-    
-    public function commitAfterExecution()
-    {
-        return false;
-    }
 }

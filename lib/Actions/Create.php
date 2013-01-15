@@ -34,9 +34,4 @@ class Create implements Action
     {
         return $this->subject;
     }
-    
-    public function commitAfterExecution()
-    {
-        return true;
-    }
 }
