@@ -7,4 +7,5 @@ interface Action {
     public function hasNeedForAction();
     public function getActionType();
     public function commitAfterExecution();
+    public function getSubject();
 }

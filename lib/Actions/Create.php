@@ -31,6 +31,11 @@ class Create implements Action
     {
         return 'update';
     }
+
+    public function getSubject()
+    {
+        return $this->subject;
+    }
     
     public function commitAfterExecution()
     {

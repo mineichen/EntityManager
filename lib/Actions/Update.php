@@ -23,6 +23,11 @@ class Update implements Action
             );
         }
     }
+
+    public function getSubject()
+    {
+        return $this->observer->getSubject();
+    }
     
     public function hasNeedForAction()
     {

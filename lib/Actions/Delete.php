@@ -22,6 +22,11 @@ class Delete implements Action
         );
     }
 
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
     public function hasNeedForAction()
     {
         return true;
