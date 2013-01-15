@@ -10,10 +10,11 @@ class RepositoryRecord
     private $action;
     private $actionFactory;
     
-    public function __construct(Managable $subject, ActionFactory $actionFactory, $actionType)
+    public function __construct(Managable $subject, ActionFactory $actionFactory, $actionType, $identityMap)
     {
         $this->subject = $subject;
         $this->actionFactory = $actionFactory;
+        $this->identityMap = $identityMap;
         $this->setAction($actionType);
     }
     
@@ -38,7 +39,8 @@ class RepositoryRecord
     {
         $this->action = $this->actionFactory->getInstanceFor(
             $this->subject,
-            $actionType
+            $actionType,
+            $this->identityMap
         );
     }
 }

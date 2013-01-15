@@ -4,20 +4,23 @@ namespace mineichen\entityManager\actions;
 
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\Saver;
+use mineichen\entityManager\repository\IdentityMap;
 
 class Delete implements Action
 {
     private $saver;
     private $subject;
+    private $identityMap;
 
-    public function __construct(Saver $saver, Managable $subject) {
+    public function __construct(Saver $saver, Managable $subject, IdentityMap $identityMap) {
         $this->saver = $saver;
         $this->subject = $subject;
+        $this->identityMap = $identityMap;
     }
 
     public function performAction()
     {
-        return $this->saver->delete(
+        $this->saver->delete(
             $this->subject
         );
     }

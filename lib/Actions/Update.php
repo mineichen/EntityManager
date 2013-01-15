@@ -4,21 +4,24 @@ namespace mineichen\entityManager\actions;
 
 use mineichen\entityManager\entityObserver\Observer;
 use mineichen\entityManager\Saver;
+use mineichen\entityManager\repository\IdentityMap;
 
 class Update implements Action
 {
+    private $identityMap;
     private $saver;
     private $observer;
     
-    public function __construct(Saver $saver, Observer $observer) {
+    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap) {
         $this->saver = $saver;
         $this->observer = $observer;
+        $this->identityMap = $identityMap;
     }
     
     public function performAction()
     {
         if ($this->hasNeedForAction()) {
-            return $this->saver->update(
+            $this->saver->update(
                 $this->observer
             );
         }

@@ -7,6 +7,7 @@ use mineichen\entityManager\Saver;
 use mineichen\entityManager\entityObserver\Generator as ObserverFactory;
 use mineichen\entityManager\actions;
 use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\repository\IdentityMap;
 
 class Factory 
 {
@@ -19,23 +20,26 @@ class Factory
         $this->saver = $saver;
     }
     
-    public function getInstanceFor(Managable $subject, $type)
+    public function getInstanceFor(Managable $subject, $type, IdentityMap $identityMap)
     {
         switch ($type) {
             case 'create':
                 return new actions\Create(
                     $subject, 
-                    $this->saver
+                    $this->saver,
+                    $identityMap
                 );
             case 'update':
                 return new actions\Update(
                     $this->saver,
-                    $this->observerFactory->getInstanceFor($subject)
+                    $this->observerFactory->getInstanceFor($subject),
+                    $identityMap
                 );
             case 'delete':
                 return new actions\Delete(
                     $subject,
-                    $this->saver
+                    $this->saver,
+                    $identityMap
                 );
         }
         

@@ -165,7 +165,7 @@ class RepositorySandbox implements Repository
         }
 
         $this->identityMap->attach(
-            $this->recordGenerator->create($subject, $actionType)
+            $this->recordGenerator->create($subject, $actionType, $this->identityMap)
         );
     }
 

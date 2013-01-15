@@ -13,12 +13,13 @@ class RepositoryRecordGenerator
         $this->actionFactory = $actionFactory;
     }
     
-    public function create(Managable $subject, $actionType)
+    public function create(Managable $subject, $actionType, $identityMap)
     {
         return new RepositoryRecord(
             $subject,
             $this->actionFactory,
-            $actionType
+            $actionType,
+            $identityMap
         );
     }
 }
