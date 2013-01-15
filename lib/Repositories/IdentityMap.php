@@ -7,14 +7,17 @@ use mineichen\entityManager\ActionPriorityGenerator;
 class IdentityMap
 {
     private $map;
+    private $generator;
 
-    public function __construct()
+    public function __construct(RepositoryRecordGenerator $generator)
     {
         $this->map = new \SplObjectStorage();
+        $this->generator = $generator;
     }
 
-    public function attach(RepositoryRecord $record)
+    public function attach(Managable $subject, $actionType)
     {
+        $record = $this->generator->create($subject, $actionType, $this);
         $this->map->attach($record->getSubject(), $record);
     }
 

@@ -16,7 +16,7 @@ class ManagerFactory
     public function getRepositorySandbox($entityType, Saver $saver, Loader $loader, $complementer = null)
     {
         $repo = new repository\RepositorySandbox(
-            $this->getRepositoryRecordGenerator($saver),
+            $this->getIdentityMap($saver),
             $entityType,
             $loader
         );
@@ -32,6 +32,13 @@ class ManagerFactory
     {
         return new repository\RepositoryRecordGenerator(
             $this->getActionFactory($saver)
+        );
+    }
+
+    protected function getIdentityMap(Saver $saver)
+    {
+        return new repository\IdentityMap(
+            $this->getRepositoryRecordGenerator($saver)
         );
     }
     

@@ -18,11 +18,6 @@ class RepositorySandbox implements Repository
     private $records;
     
     /**
-     * @var \mineichen\entityManager\repository\RepositoryRecordGenerator
-     */
-    private $recordGenerator;
-    
-    /**
      * @var string
      */
     private $entityType;
@@ -38,14 +33,13 @@ class RepositorySandbox implements Repository
     private $manager;
 
     /**
-     * @param RepositoryRecordGenerator $recordGenerator
+     * @param IdentityMap $identityMap
      * @param $entityType
      * @param \mineichen\entityManager\Loader $loader
      */
-    public function __construct(RepositoryRecordGenerator $recordGenerator, $entityType, Loader $loader)
+    public function __construct(IdentityMap $identityMap, $entityType, Loader $loader)
     {
-        $this->identityMap = new IdentityMap();
-        $this->recordGenerator = $recordGenerator;
+        $this->identityMap = $identityMap;
         $this->entityType = $entityType;
         $this->loader = $loader;
     }
@@ -164,9 +158,7 @@ class RepositorySandbox implements Repository
             return;
         }
 
-        $this->identityMap->attach(
-            $this->recordGenerator->create($subject, $actionType, $this->identityMap)
-        );
+        $this->identityMap->attach($subject, $actionType);
     }
 
     private function hasRecordFor(Managable $subject)
