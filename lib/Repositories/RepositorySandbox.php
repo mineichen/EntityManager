@@ -44,7 +44,7 @@ class RepositorySandbox implements Repository
      */
     public function __construct(RepositoryRecordGenerator $recordGenerator, $entityType, Loader $loader)
     {
-        $this->records = new \SplObjectStorage();
+        $this->identityMap = new IdentityMap();
         $this->recordGenerator = $recordGenerator;
         $this->entityType = $entityType;
         $this->loader = $loader;
@@ -113,12 +113,12 @@ class RepositorySandbox implements Repository
 
     public function detach(Managable $subject)
     {
-        $this->records->detach($subject);
+        $this->identityMap->detach($subject);
     }
 
     public function appendChangesTo(ActionPriorityGenerator $generator)
     {
-        $generator->appendChanges($this->records);
+        $this->identityMap->appendChangesTo($generator);
     }
 
     private function fetchSubjectForId($id)
@@ -148,7 +148,7 @@ class RepositorySandbox implements Repository
     private function getDirtySubjects()
     {  
         return array_filter(
-            iterator_to_array($this->records),
+            $this->identityMap->asArray(),
             function(Managable $subject) {
                 return $this->getRecordFor($subject)->isDirty();
             }
@@ -169,7 +169,7 @@ class RepositorySandbox implements Repository
     private function getSubjectsForId($id)
     {
         return array_filter(
-            iterator_to_array($this->records),
+            $this->identityMap->asArray(),
             function(Managable $subject) use ($id) {
                 return $subject->hasId() && $subject->getId() === $id;
             }
@@ -189,7 +189,7 @@ class RepositorySandbox implements Repository
 
     private function attachRecord(RepositoryRecord $record)
     {
-        $this->records->attach($record->getSubject(), $record);
+        $this->identityMap->attach($record);
     }
 
     /**
@@ -198,12 +198,12 @@ class RepositorySandbox implements Repository
      */
     private function getRecordFor(Managable $subject)
     {
-        return $this->records->offsetGet($subject);
+        return $this->identityMap->getRecordFor($subject);
     }
     
     private function hasRecordFor(Managable $subject)
     {
-        return $this->records->offsetExists($subject);
+        return $this->identityMap->hasRecordFor($subject);
     }
     
     private function matchesType(Managable $subject)
