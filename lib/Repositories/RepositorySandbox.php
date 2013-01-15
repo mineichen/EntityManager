@@ -63,6 +63,11 @@ class RepositorySandbox implements Repository
         $this->attach($subject, 'create');
     }
 
+    public function delete(Managable $subject)
+    {
+        $this->attach($subject, 'delete');
+    }
+
     public function find($id)
     {
         $subject = $this->fetchSubjectForId($id);
@@ -104,6 +109,11 @@ class RepositorySandbox implements Repository
     public function flushEntity(Managable $subject)
     {
         $this->getRecordFor($subject)->performAction();
+    }
+
+    public function detach(Managable $subject)
+    {
+        $this->records->detach($subject);
     }
 
     public function appendChangesTo(ActionPriorityGenerator $generator)
@@ -156,17 +166,6 @@ class RepositorySandbox implements Repository
         return (bool) $this->getDirtyRecords();
     }
     
-    private function attach(Managable $subject, $actionType)
-    {
-        if ($this->hasRecordFor($subject)) {
-            return;
-        }
-        
-        $this->attachRecord(
-            $this->recordGenerator->create($subject, $actionType)
-        );   
-    }
-    
     private function getSubjectsForId($id)
     {
         return array_filter(
@@ -176,7 +175,18 @@ class RepositorySandbox implements Repository
             }
         );
     }
-    
+
+    private function attach(Managable $subject, $actionType)
+    {
+        if ($this->hasRecordFor($subject)) {
+            return;
+        }
+
+        $this->attachRecord(
+            $this->recordGenerator->create($subject, $actionType)
+        );
+    }
+
     private function attachRecord(RepositoryRecord $record)
     {
         $this->records->attach($record->getSubject(), $record);

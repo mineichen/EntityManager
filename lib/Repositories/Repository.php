@@ -12,4 +12,5 @@ interface Repository {
     public function findBy(array $config);
     public function remove(Managable $subject);
     public function flushEntity(Managable $subject);
+    public function detach(Managable $subject);
 }

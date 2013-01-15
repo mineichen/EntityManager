@@ -35,6 +35,11 @@ class EntityManager
     {
         $this->getRepository($subject->getType())->persist($subject);
     }
+
+    public function delete(repository\Managable $subject)
+    {
+        $this->getRepository($subject->getType())->delete($subject);
+    }
     
     public function find($type, $id) 
     {
