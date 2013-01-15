@@ -38,6 +38,16 @@ class IdentityMap
         return $this->map->offsetExists($subject);
     }
 
+    public function getSubjectsForId($id)
+    {
+        return array_filter(
+            $this->asArray(),
+            function(Managable $subject) use ($id) {
+                return $subject->hasId() && $subject->getId() === $id;
+            }
+        );
+    }
+
     public function appendChangesTo(ActionPriorityGenerator $generator)
     {
         $generator->appendChanges($this->map);

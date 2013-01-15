@@ -10,7 +10,6 @@ interface Repository {
     public function persist(Managable $subject);
     public function find($id);
     public function findBy(array $config);
-    public function remove(Managable $subject);
+    public function delete(Managable $subject);
     public function flushEntity(Managable $subject);
-    public function detach(Managable $subject);
 }

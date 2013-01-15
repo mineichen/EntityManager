@@ -101,19 +101,9 @@ class RepositorySandbox implements Repository
         );
     }
 
-    public function remove(Managable $subject)
-    {
-        throw new \mineichen\entityManager\Exception('Not yet implemented');
-    }
-
     public function flushEntity(Managable $subject)
     {
-        $this->getRecordFor($subject)->performAction();
-    }
-
-    public function detach(Managable $subject)
-    {
-        $this->identityMap->detach($subject);
+        $this->identityMap->getRecordFor($subject)->performAction();
     }
 
     public function appendChangesTo(ActionPriorityGenerator $generator)
@@ -123,7 +113,7 @@ class RepositorySandbox implements Repository
 
     private function fetchSubjectForId($id)
     {
-        $result = $this->getSubjectsForId($id);
+        $result = $this->identityMap->getSubjectsForId($id);
         
         switch (count($result)) {
             case 0:
@@ -139,7 +129,7 @@ class RepositorySandbox implements Repository
     {
         return array_map(
             function($subject) {
-                return $this->getRecordFor($subject);
+                return $this->identityMap->getRecordFor($subject);
             }, 
             $this->getDirtySubjects()
         );
@@ -150,7 +140,7 @@ class RepositorySandbox implements Repository
         return array_filter(
             $this->identityMap->asArray(),
             function(Managable $subject) {
-                return $this->getRecordFor($subject)->isDirty();
+                return $this->identityMap->getRecordFor($subject)->isDirty();
             }
         );
     }
@@ -166,15 +156,7 @@ class RepositorySandbox implements Repository
         return (bool) $this->getDirtyRecords();
     }
     
-    private function getSubjectsForId($id)
-    {
-        return array_filter(
-            $this->identityMap->asArray(),
-            function(Managable $subject) use ($id) {
-                return $subject->hasId() && $subject->getId() === $id;
-            }
-        );
-    }
+
 
     private function attach(Managable $subject, $actionType)
     {
@@ -182,25 +164,11 @@ class RepositorySandbox implements Repository
             return;
         }
 
-        $this->attachRecord(
+        $this->identityMap->attach(
             $this->recordGenerator->create($subject, $actionType)
         );
     }
 
-    private function attachRecord(RepositoryRecord $record)
-    {
-        $this->identityMap->attach($record);
-    }
-
-    /**
-     * @param Managable $subject
-     * @return RepositoryRecord
-     */
-    private function getRecordFor(Managable $subject)
-    {
-        return $this->identityMap->getRecordFor($subject);
-    }
-    
     private function hasRecordFor(Managable $subject)
     {
         return $this->identityMap->hasRecordFor($subject);
