@@ -2,9 +2,10 @@
 
 namespace mineichen\entityManager\repository;
 
+use mineichen\entityManager\actions\Action;
 use mineichen\entityManager\actions\Factory as ActionFactory;
 
-class RepositoryRecord 
+class RepositoryRecord implements Action
 {
     private $subject;
     private $action;
@@ -40,5 +41,15 @@ class RepositoryRecord
             $actionType,
             $this->identityMap
         );
+    }
+
+    public function hasNeedForAction()
+    {
+        throw new \Exception('Dont call!');
+    }
+
+    public function commitAfterExecution()
+    {
+        throw new \Exception('Dont call!');
     }
 }

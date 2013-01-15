@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\repository\RepositoryRecord;
+use mineichen\entityManager\actions\Action;
 
 class EntityManager 
 {
@@ -101,7 +101,7 @@ class EntityManager
         }
     }
     
-    protected function resolveDependencies(RepositoryRecord $record)
+    protected function resolveDependencies(Action $record)
     {
         $subject = $record->getSubject();
     
