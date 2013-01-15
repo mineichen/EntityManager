@@ -142,7 +142,7 @@ class RepositorySandbox implements Repository
     public function isRegistered(Managable $subject)
     {
         return $this->matchesType($subject)
-            && $this->hasRecordFor($subject);
+            && $this->identityMap->hasRecordFor($subject);
     }
 
     public function hasNeedForFlush()
@@ -154,18 +154,13 @@ class RepositorySandbox implements Repository
 
     private function attach(Managable $subject, $actionType)
     {
-        if ($this->hasRecordFor($subject)) {
+        if ($this->identityMap->hasRecordFor($subject)) {
             return;
         }
 
         $this->identityMap->attach($subject, $actionType);
     }
 
-    private function hasRecordFor(Managable $subject)
-    {
-        return $this->identityMap->hasRecordFor($subject);
-    }
-    
     private function matchesType(Managable $subject)
     {
         return $subject->getType() === $this->entityType;
