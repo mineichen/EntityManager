@@ -273,8 +273,8 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             $config[] = $record;
         }
         
-        $factory = new ConfigFactory($config);
-        return $factory->createManager();
+        $factory = new ConfigFactory($config, new RepositoryFactory());
+        return $factory->get();
     }
 
     private function getObserverForSubjectConstraint($subject)
