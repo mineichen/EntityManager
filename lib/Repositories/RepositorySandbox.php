@@ -74,7 +74,7 @@ class RepositorySandbox implements Repository
         return $subject;
     }
 
-    public function findBy(array $config)
+    public function findBy(array $config = array())
     {
         return array_map(
             function($newEntity) {

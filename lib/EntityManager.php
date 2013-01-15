@@ -46,7 +46,7 @@ class EntityManager
         return $this->getRepository($type)->find($id);
     }
 
-    public function findBy($type, array $config)
+    public function findBy($type, array $config = array())
     {
         return $this->getRepository($type)->findBy($config);
     }
