@@ -59,7 +59,7 @@ class RepositorySandbox implements Repository
 
     public function delete(Managable $subject)
     {
-        $this->attach($subject, 'delete');
+        $this->identityMap->attach($subject, 'delete');
     }
 
     public function find($id)

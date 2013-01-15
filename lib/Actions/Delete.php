@@ -5,28 +5,29 @@ namespace mineichen\entityManager\actions;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\repository\IdentityMap;
+use mineichen\entityManager\entityObserver\asArray\Observer;
 
 class Delete implements Action
 {
     private $saver;
-    private $subject;
+    private $observer;
     private $identityMap;
 
-    public function __construct(Saver $saver, Managable $subject, IdentityMap $identityMap) {
+    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap) {
         $this->saver = $saver;
-        $this->subject = $subject;
+        $this->observer = $observer;
         $this->identityMap = $identityMap;
     }
 
     public function performAction()
     {
-        $this->saver->delete($this->subject);
-        $this->identityMap->detach($this->subject);
+        $this->saver->delete($this->observer);
+        $this->identityMap->detach($this->getSubject());
     }
 
     public function getSubject()
     {
-        return $this->subject;
+        return $this->observer->getSubject();
     }
 
     public function hasNeedForAction()

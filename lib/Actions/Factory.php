@@ -37,8 +37,8 @@ class Factory
                 );
             case 'delete':
                 return new actions\Delete(
-                    $subject,
                     $this->saver,
+                    $this->observerFactory->getInstanceFor($subject),
                     $identityMap
                 );
         }

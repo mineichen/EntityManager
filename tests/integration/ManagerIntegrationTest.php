@@ -227,6 +227,33 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager->flush();
     }
 
+    public function testDeleteEntityIsNotStillInIdentityMapAfterFlush()
+    {
+        $returnFoo = new Foo('baz', 'bat');
+        $returnFoo->setId(10);
+        $loader = $this->mockLoader();
+        $saver = $this->mockSaver();
+
+        $manager = $this->createEntityManager(
+            array('Foo', $saver, $loader)
+        );
+
+        $loader->expects($this->exactly(2))
+            ->method('find')
+            ->with($returnFoo->getId())
+            ->will($this->returnValue($returnFoo));
+
+        $saver->expects($this->once())
+            ->method('delete')
+            ->with($this->getObserverForSubjectConstraint($returnFoo));
+
+        $foo = $manager->find('Foo', 10);
+        $manager->delete($foo);
+        $manager->flush();
+
+
+        $manager->find('Foo', 10);
+    }
 
     private function createEntityManager()
     {
