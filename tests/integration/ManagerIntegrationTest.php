@@ -187,19 +187,42 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             ->method('findBy')
             ->will($this->returnValue(array($foo, $foo2)));
 
-        $constraint = $this->callback(function($observer) use ($foo) {
-            return $observer->getSubject() === $foo;
-        });
 
         $saver->expects($this->once())
             ->method('update')
-            ->with($constraint);
+            ->with($this->getObserverForSubjectConstraint($foo));
 
         $entity = $manager->findBy('Foo', array())[0];
 
         $this->assertFalse($manager->hasNeedForFlush());
         $entity->setBaz('newValueForTest');
         $this->assertTrue($manager->hasNeedForFlush());
+
+        $manager->flush();
+    }
+
+    public function testNewEntityWillBeUpdatedAfterItsFlushedAndThenChanged()
+    {
+        $foo = new Foo('baz', 'bat');
+        $loader = $this->mockLoader();
+        $saver = $this->mockSaver();
+
+        $manager = $this->createEntityManager(
+            array('Foo', $saver, $loader)
+        );
+
+        $saver->expects($this->once())
+            ->method('create')
+            ->with($foo);
+
+        $manager->persist($foo);
+        $manager->flush();
+
+        $saver->expects($this->once())
+            ->method('update')
+            ->with($this->getObserverForSubjectConstraint($foo));
+
+        $foo->setBat('Something else');
 
         $manager->flush();
     }
@@ -225,6 +248,13 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         
         $factory = new ConfigFactory($config);
         return $factory->createManager();
+    }
+
+    private function getObserverForSubjectConstraint($subject)
+    {
+        return $this->callback(function($observer) use ($subject) {
+            return $observer->getSubject() === $subject;
+        });
     }
 
     private function mockComplementer()
