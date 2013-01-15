@@ -3,21 +3,22 @@
 namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\ActionPriorityGenerator;
+use mineichen\entityManager\actions\Factory;
 
 class IdentityMap
 {
     private $map;
-    private $generator;
+    private $actionFactory;
 
-    public function __construct(RepositoryRecordGenerator $generator)
+    public function __construct(Factory $actionFactory)
     {
         $this->map = new \SplObjectStorage();
-        $this->generator = $generator;
+        $this->actionFactory = $actionFactory;
     }
 
     public function attach(Managable $subject, $actionType)
     {
-        $record = $this->generator->create($subject, $actionType, $this);
+        $record = $this->actionFactory->getInstanceFor($subject, $actionType, $this);
         $this->map->attach($record->getSubject(), $record);
     }
 
@@ -31,12 +32,12 @@ class IdentityMap
         return iterator_to_array($this->map);
     }
 
-    public function getRecordFor(Managable $subject)
+    public function getActionFor(Managable $subject)
     {
         return $this->map->offsetGet($subject);
     }
 
-    public function hasRecordFor(Managable $subject)
+    public function hasActionFor(Managable $subject)
     {
         return $this->map->offsetExists($subject);
     }

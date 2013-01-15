@@ -28,17 +28,10 @@ class ManagerFactory
         return $repo;
     }
     
-    public function getRepositoryRecordGenerator(Saver $saver)
-    {
-        return new repository\RepositoryRecordGenerator(
-            $this->getActionFactory($saver)
-        );
-    }
-
     protected function getIdentityMap(Saver $saver)
     {
         return new repository\IdentityMap(
-            $this->getRepositoryRecordGenerator($saver)
+            $this->getActionFactory($saver)
         );
     }
     

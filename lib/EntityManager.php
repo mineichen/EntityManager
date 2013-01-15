@@ -95,7 +95,7 @@ class EntityManager
     protected function resolveAllDependencies()
     {
         foreach($this->repos as $repo) {
-            foreach ($repo->getDirtyRecords() as $record) {
+            foreach ($repo->getDirtyActions() as $record) {
                 $this->resolveDependencies($record);
             }
         }

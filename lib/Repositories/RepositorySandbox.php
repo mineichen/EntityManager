@@ -97,7 +97,7 @@ class RepositorySandbox implements Repository
 
     public function flushEntity(Managable $subject)
     {
-        $this->identityMap->getRecordFor($subject)->performAction();
+        $this->identityMap->getActionFor($subject)->performAction();
     }
 
     public function appendChangesTo(ActionPriorityGenerator $generator)
@@ -115,15 +115,15 @@ class RepositorySandbox implements Repository
             case 1;
                 return array_values($result)[0];
             default:
-                throw new Exception(sprintf('Multiple Records with same ID "%s" registered!', $id));
+                throw new Exception(sprintf('Multiple Instances with same ID "%s" registered!', $id));
         }
     }
     
-    public function getDirtyRecords()
+    public function getDirtyActions()
     {
         return array_map(
             function($subject) {
-                return $this->identityMap->getRecordFor($subject);
+                return $this->identityMap->getActionFor($subject);
             }, 
             $this->getDirtySubjects()
         );
@@ -134,7 +134,7 @@ class RepositorySandbox implements Repository
         return array_filter(
             $this->identityMap->asArray(),
             function(Managable $subject) {
-                return $this->identityMap->getRecordFor($subject)->isDirty();
+                return $this->identityMap->getActionFor($subject)->hasNeedForAction();
             }
         );
     }
@@ -142,19 +142,19 @@ class RepositorySandbox implements Repository
     public function isRegistered(Managable $subject)
     {
         return $this->matchesType($subject)
-            && $this->identityMap->hasRecordFor($subject);
+            && $this->identityMap->hasActionFor($subject);
     }
 
     public function hasNeedForFlush()
     {
-        return (bool) $this->getDirtyRecords();
+        return (bool) $this->getDirtyActions();
     }
     
 
 
     private function attach(Managable $subject, $actionType)
     {
-        if ($this->identityMap->hasRecordFor($subject)) {
+        if ($this->identityMap->hasActionFor($subject)) {
             return;
         }
 
