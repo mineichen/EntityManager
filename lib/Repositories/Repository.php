@@ -3,7 +3,6 @@
 namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\repository\Managable;
-use mineichen\entityManager\ActionPriorityGenerator;
 
 interface Repository {
     public function getEntityType();
