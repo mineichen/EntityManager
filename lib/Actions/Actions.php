@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\actions;
+namespace mineichen\entityManager\action;
 
 interface Action {
     public function performAction();

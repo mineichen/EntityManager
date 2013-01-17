@@ -1,11 +1,10 @@
 <?php
 
-namespace mineichen\entityManager\actions;
+namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\Exception;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\entityObserver\Generator as ObserverFactory;
-use mineichen\entityManager\actions;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\repository\IdentityMap;
 use mineichen\entityManager\proxy\Complementer;
@@ -26,20 +25,20 @@ class Factory
     {
         switch ($type) {
             case 'create':
-                return new actions\Create(
+                return new Create(
                     $subject, 
                     $this->saver,
                     $identityMap
                 );
             case 'update':
-                return new actions\Update(
+                return new Update(
                     $this->saver,
                     $this->observerFactory->getInstanceFor($subject),
                     $identityMap,
                     $this->complementer
                 );
             case 'delete':
-                return new actions\Delete(
+                return new Delete(
                     $this->saver,
                     $this->observerFactory->getInstanceFor($subject),
                     $identityMap

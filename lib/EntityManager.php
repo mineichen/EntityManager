@@ -2,8 +2,6 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\actions\Action;
-
 class EntityManager 
 {
     /**
@@ -101,7 +99,7 @@ class EntityManager
         }
     }
     
-    protected function resolveDependencies(Action $record)
+    protected function resolveDependencies(action\Action $record)
     {
         $subject = $record->getSubject();
     

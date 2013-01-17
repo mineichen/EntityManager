@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\actions;
+namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\entityObserver\Observer;
 use mineichen\entityManager\Saver;
@@ -13,7 +13,7 @@ class Update implements Action
     private $identityMap;
     private $saver;
     private $observer;
-    
+
     public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap, $complementer) {
         $this->saver = $saver;
         $this->observer = $observer;
@@ -24,7 +24,7 @@ class Update implements Action
             $observer->getSubject()->setComplementer($complementer);
         }
     }
-    
+
     public function performAction()
     {
         if ($this->hasNeedForAction()) {

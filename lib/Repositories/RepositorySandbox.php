@@ -142,7 +142,7 @@ class RepositorySandbox implements Repository
     /**
      * @param Managable $subject
      * @param $actionType
-     * @return \mineichen\entityManager\actions\Action
+     * @return \mineichen\entityManager\action\Action
      */
     private function attach(Managable $subject, $actionType)
     {

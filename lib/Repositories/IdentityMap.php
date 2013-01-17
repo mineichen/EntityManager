@@ -3,7 +3,7 @@
 namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\ActionPriorityGenerator;
-use mineichen\entityManager\actions\Factory;
+use mineichen\entityManager\action\Factory;
 
 class IdentityMap
 {

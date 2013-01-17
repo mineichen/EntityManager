@@ -7,6 +7,14 @@ spl_autoload_register(
         static $classes = null;
         if ($classes === null) {
             $classes = array(
+                'mineichen\\entitymanager\\action\\plugin\\plugin' => '/Actions/Plugin/Plugin.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\complementable' => '/Actions/Plugin/Proxy/Complementable.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\complementer' => '/Actions/Plugin/Proxy/Complementer.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\exception' => '/Actions/Plugin/Proxy/Exception.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\lazyload' => '/Actions/Plugin/Proxy/LazyLoad.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\notloaded' => '/Actions/Plugin/Proxy/NotLoaded.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\plugin' => '/Actions/Plugin/Proxy/Plugin.php',
+                'mineichen\\entitymanager\\action\\plugin\\proxy\\simplenotloaded' => '/Actions/Plugin/Proxy/SimpleNotLoaded.php',
                 'mineichen\\entitymanager\\actionprioritygenerator' => '/ActionPriorityGenerator.php',
                 'mineichen\\entitymanager\\actions\\action' => '/Actions/Actions.php',
                 'mineichen\\entitymanager\\actions\\create' => '/Actions/Create.php',
@@ -25,12 +33,6 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\entityobserver\\observer' => '/EntityObserver/Observer.php',
                 'mineichen\\entitymanager\\exception' => '/Exception.php',
                 'mineichen\\entitymanager\\loader' => '/Repositories/Loader.php',
-                'mineichen\\entitymanager\\proxy\\complementable' => '/Proxy/Complementable.php',
-                'mineichen\\entitymanager\\proxy\\complementer' => '/Proxy/Complementer.php',
-                'mineichen\\entitymanager\\proxy\\exception' => '/Proxy/Exception.php',
-                'mineichen\\entitymanager\\proxy\\lazyload' => '/Proxy/LazyLoad.php',
-                'mineichen\\entitymanager\\proxy\\notloaded' => '/Proxy/NotLoaded.php',
-                'mineichen\\entitymanager\\proxy\\simplenotloaded' => '/Proxy/SimpleNotLoaded.php',
                 'mineichen\\entitymanager\\repository\\identitymap' => '/Repositories/IdentityMap.php',
                 'mineichen\\entitymanager\\repository\\managable' => '/Repositories/Managable.php',
                 'mineichen\\entitymanager\\repository\\repository' => '/Repositories/Repository.php',

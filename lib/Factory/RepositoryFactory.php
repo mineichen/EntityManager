@@ -16,6 +16,8 @@ class RepositoryFactory
 
         return $repo;
     }
+
+
     
     protected function getIdentityMap(Saver $saver, $complementer)
     {
@@ -26,7 +28,7 @@ class RepositoryFactory
     
     protected function getActionFactory(Saver $saver, $complementer)
     {
-        $factory = new actions\Factory(
+        $factory = new action\Factory(
             $this->getObserverFactory(),
             $saver
         );

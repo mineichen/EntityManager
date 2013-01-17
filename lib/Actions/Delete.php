@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\actions;
+namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\Saver;
