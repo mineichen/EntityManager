@@ -9,31 +9,31 @@ class RepositoryFactory
     public function get($entityType, Saver $saver, Loader $loader, $complementer = null)
     {
         $repo = new repository\RepositorySandbox(
-            $this->getIdentityMap($saver),
+            $this->getIdentityMap($saver, $complementer),
             $entityType,
             $loader
         );
 
-        if ($complementer) {
-            $repo->setComplementer($complementer);
-        }
-
         return $repo;
     }
     
-    protected function getIdentityMap(Saver $saver)
+    protected function getIdentityMap(Saver $saver, $complementer)
     {
         return new repository\IdentityMap(
-            $this->getActionFactory($saver)
+            $this->getActionFactory($saver, $complementer)
         );
     }
     
-    protected function getActionFactory(Saver $saver)
+    protected function getActionFactory(Saver $saver, $complementer)
     {
-        return new actions\Factory(
+        $factory = new actions\Factory(
             $this->getObserverFactory(),
             $saver
         );
+
+        $factory->setComplementer($complementer);
+
+        return $factory;
     }
     
     protected function getObserverFactory()

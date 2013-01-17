@@ -5,8 +5,6 @@ namespace mineichen\entityManager\repository;
 use mineichen\entityManager\EntityManager;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\ActionPriorityGenerator;
-use mineichen\entityManager\proxy\Complementable;
-use mineichen\entityManager\proxy\Complementer;
 use mineichen\entityManager\Loader;
 
 
@@ -21,11 +19,6 @@ class RepositorySandbox implements Repository
      * @var string
      */
     private $entityType;
-
-    /**
-     * @var Complementer
-     */
-    private $complementer;
 
     /**
      * @var \mineichen\entityManager\EntityManager
@@ -81,10 +74,6 @@ class RepositorySandbox implements Repository
                 $existing = $this->fetchSubjectForId($newEntity->getId());
                 if ($existing !== false) {
                     return $existing;
-                }
-
-                if ($newEntity instanceof Complementable) {
-                    $newEntity->setComplementer($this->complementer);
                 }
 
                 $this->attach($newEntity, 'update');
@@ -185,18 +174,5 @@ class RepositorySandbox implements Repository
         }
 
         return $this->manager;
-    }
-
-    public function setComplementer(Complementer $complementer)
-    {
-        $this->complementer = $complementer;
-    }
-
-    public function getComplementer()
-    {
-        if (!($this->complementer instanceof Complementer)) {
-            throw new \mineichen\entityManager\Exception('Complementer not Found');
-        }
-        return $this->complementer;
     }
 }

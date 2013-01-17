@@ -8,9 +8,11 @@ use mineichen\entityManager\entityObserver\Generator as ObserverFactory;
 use mineichen\entityManager\actions;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\repository\IdentityMap;
+use mineichen\entityManager\proxy\Complementer;
 
 class Factory 
 {
+    private $complementer;
     private $observerFactory;
     private $saver;
     
@@ -33,7 +35,8 @@ class Factory
                 return new actions\Update(
                     $this->saver,
                     $this->observerFactory->getInstanceFor($subject),
-                    $identityMap
+                    $identityMap,
+                    $this->complementer
                 );
             case 'delete':
                 return new actions\Delete(
@@ -44,5 +47,10 @@ class Factory
         }
         
         throw new Exception(sprintf('No action found for type "%s"', $type));
+    }
+
+    public function setComplementer($complementer)
+    {
+        $this->complementer = $complementer;
     }
 }

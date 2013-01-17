@@ -5,6 +5,8 @@ namespace mineichen\entityManager\actions;
 use mineichen\entityManager\entityObserver\Observer;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\repository\IdentityMap;
+use mineichen\entityManager\proxy\Complementable;
+use mineichen\entityManager\proxy\Complementer;
 
 class Update implements Action
 {
@@ -12,10 +14,15 @@ class Update implements Action
     private $saver;
     private $observer;
     
-    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap) {
+    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap, $complementer) {
         $this->saver = $saver;
         $this->observer = $observer;
         $this->identityMap = $identityMap;
+
+        // @todo Remove Complementer Instanceof
+        if ($observer->getSubject() instanceof Complementable && $complementer instanceof \mineichen\entityManager\proxy\Complementer) {
+            $observer->getSubject()->setComplementer($complementer);
+        }
     }
     
     public function performAction()
