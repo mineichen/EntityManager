@@ -255,6 +255,40 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager->find('Foo', 10);
     }
 
+    public function testEntityIsNotDirtyAfterComplementingIt()
+    {
+        $foo = new Foo('baz', 'bat');
+        $foo->setId(10);
+        $foo->setValueToComplement(new \mineichen\entityManager\proxy\SimpleNotLoaded());
+
+        $completeFoo = new Foo('baz', 'bat');
+        $completeFoo->setId(10);
+        $completeFoo->setValueToComplement('Real Value');
+
+
+        $loader = $this->mockLoader();
+        $saver = $this->mockSaver();
+        $complementer = new proxy\FooComplementer($loader);
+
+        $loader->expects($this->once())
+            ->method('findBy')
+            ->will($this->returnValue(array($foo)));
+
+        $loader->expects($this->once())
+            ->method('find')
+            ->with($foo->getId())
+            ->will($this->returnValue($completeFoo));
+
+        $manager = $this->createEntityManager(
+            array('Foo', $saver, $loader, $complementer)
+        );
+
+        $entity = $manager->findBy('Foo')[0];
+        $entity->getValueToComplement();
+
+        $this->assertFalse($manager->hasNeedForFlush());
+    }
+
     private function createEntityManager()
     {
         $config = array();

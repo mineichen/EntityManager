@@ -18,8 +18,10 @@ class IdentityMap
 
     public function attach(Managable $subject, $actionType)
     {
-        $record = $this->actionFactory->getInstanceFor($subject, $actionType, $this);
-        $this->map->attach($record->getSubject(), $record);
+        $action = $this->actionFactory->getInstanceFor($subject, $actionType, $this);
+        $this->map->attach($action->getSubject(), $action);
+
+        return $action;
     }
 
     public function detach(Managable $subject)

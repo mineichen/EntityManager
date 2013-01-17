@@ -80,7 +80,6 @@ class RepositorySandbox implements Repository
             function($newEntity) {
                 $existing = $this->fetchSubjectForId($newEntity->getId());
                 if ($existing !== false) {
-                    //echo 'Load existing one more Time';
                     return $existing;
                 }
 
@@ -149,16 +148,20 @@ class RepositorySandbox implements Repository
     {
         return (bool) $this->getDirtyActions();
     }
-    
 
 
+    /**
+     * @param Managable $subject
+     * @param $actionType
+     * @return \mineichen\entityManager\actions\Action
+     */
     private function attach(Managable $subject, $actionType)
     {
-        if ($this->identityMap->hasActionFor($subject)) {
-            return;
+        if ($action = $this->identityMap->hasActionFor($subject)) {
+            return $this->identityMap->getActionFor($subject);
         }
 
-        $this->identityMap->attach($subject, $actionType);
+        return $this->identityMap->attach($subject, $actionType);
     }
 
     private function matchesType(Managable $subject)

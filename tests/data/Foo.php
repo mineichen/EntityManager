@@ -30,7 +30,8 @@ class Foo implements Observable, Managable, Complementable
         return array(
             'bat' => $this->bat, 
             'baz' => $this->baz,
-            'optional' => $this->optional
+            'optional' => $this->optional,
+            'valueToComplement' => $this->valueToComplement
         );
     }   
 
