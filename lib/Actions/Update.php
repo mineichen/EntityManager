@@ -28,9 +28,7 @@ class Update implements Action
     public function performAction()
     {
         if ($this->hasNeedForAction()) {
-            $this->saver->update(
-                $this->observer
-            );
+            $this->saver->update($this->observer);
             $this->identityMap->attach($this->getSubject(), 'update');
         }
     }

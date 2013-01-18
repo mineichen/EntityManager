@@ -30,4 +30,14 @@ class TraitTest extends \PHPUnit_Framework_TestCase
     {
         $this->entity->getOptional();
     }
+
+    public function testRegisterEntityEvent()
+    {
+        $this->entity->on('change', array($this, 'changeEventListener'));
+    }
+
+    public function changeEventListener($event)
+    {
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Event\\Change', $event);
+    }
 }
