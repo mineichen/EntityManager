@@ -15,10 +15,11 @@ class Factory
     private $observerFactory;
     private $saver;
     
-    public function __construct(ObserverFactory $observerFactory, Saver $saver)
+    public function __construct(ObserverFactory $observerFactory, Saver $saver, Complementer $complementer = null)
     {
         $this->observerFactory = $observerFactory;
         $this->saver = $saver;
+        $this->complementer = $complementer;
     }
     
     public function getInstanceFor(Managable $subject, $type, IdentityMap $identityMap)
@@ -46,10 +47,5 @@ class Factory
         }
         
         throw new Exception(sprintf('No action found for type "%s"', $type));
-    }
-
-    public function setComplementer($complementer)
-    {
-        $this->complementer = $complementer;
     }
 }

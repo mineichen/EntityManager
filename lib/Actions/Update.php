@@ -14,7 +14,7 @@ class Update implements Action
     private $saver;
     private $observer;
 
-    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap, $complementer) {
+    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap, Complementer $complementer = null) {
         $this->saver = $saver;
         $this->observer = $observer;
         $this->identityMap = $identityMap;

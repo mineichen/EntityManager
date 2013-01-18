@@ -29,7 +29,7 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\entityobserver\\asarray\\observer' => '/EntityObserver/asArray/Observer.php',
                 'mineichen\\entitymanager\\entityobserver\\generator' => '/EntityObserver/Generator.php',
                 'mineichen\\entitymanager\\entityobserver\\generatorexception' => '/EntityObserver/GeneratorException.php',
-                'mineichen\\entitymanager\\entityobserver\\idtrait' => '/Repositories/IdTrait.php',
+                'mineichen\\entitymanager\\entityobserver\\idtrait' => '/Repositories/EntityTraitrait.php',
                 'mineichen\\entitymanager\\entityobserver\\observer' => '/EntityObserver/Observer.php',
                 'mineichen\\entitymanager\\exception' => '/Exception.php',
                 'mineichen\\entitymanager\\loader' => '/Repositories/Loader.php',

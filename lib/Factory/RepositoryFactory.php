@@ -6,7 +6,7 @@ class RepositoryFactory
 {
     private $observerFactory;
     
-    public function get($entityType, Saver $saver, Loader $loader, $complementer = null)
+    public function get($entityType, Saver $saver, Loader $loader, proxy\Complementer $complementer = null)
     {
         $repo = new repository\RepositorySandbox(
             $this->getIdentityMap($saver, $complementer),
@@ -17,25 +17,20 @@ class RepositoryFactory
         return $repo;
     }
 
-
-    
-    protected function getIdentityMap(Saver $saver, $complementer)
+    protected function getIdentityMap(Saver $saver, proxy\Complementer $complementer = null)
     {
         return new repository\IdentityMap(
             $this->getActionFactory($saver, $complementer)
         );
     }
     
-    protected function getActionFactory(Saver $saver, $complementer)
+    protected function getActionFactory(Saver $saver, proxy\Complementer $complementer = null)
     {
-        $factory = new action\Factory(
+        return new action\Factory(
             $this->getObserverFactory(),
-            $saver
+            $saver,
+            $complementer
         );
-
-        $factory->setComplementer($complementer);
-
-        return $factory;
     }
     
     protected function getObserverFactory()

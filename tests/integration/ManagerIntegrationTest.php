@@ -287,6 +287,21 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $entity->getValueToComplement();
 
         $this->assertFalse($manager->hasNeedForFlush());
+
+        return array($manager, $entity);
+    }
+
+    /**
+     * @depends testEntityIsNotDirtyAfterComplementingIt
+     */
+    public function testEntityIsDirtyAfterComplementingAndThenChange($props)
+    {
+        $manager = $props[0];
+        $entity = $props[1];
+
+        $entity->setValueToComplement('adsfaslue');
+
+        $this->assertTrue($manager->hasNeedForFlush());
     }
 
     private function createEntityManager()

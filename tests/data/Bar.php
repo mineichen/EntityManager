@@ -8,46 +8,40 @@ use mineichen\entityManager\repository\Managable;
 
 class Bar implements Observable, Managable, DependencyAware
 {
-    use entityObserver\IdTrait;
+    use entityObserver\EntityTrait;
     
-    private $noEntityVar = 'bar';
-    private $lastname;
-    private $firstname;
     private $dependencies = array();
-    private $foo;
 
     public function __construct($firstname, $lastname)
     {
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
+        $this->set('firstname', $firstname);
+        $this->set('lastname', $lastname);
     }
 
+    public function getType()
+    {
+        return 'Bar';
+    }
 
-    
     public function setFirstName($firstname)
     {
-        $this->firstname = $firstname;
+        $this->set('firstname', $firstname);
     }
     
     public function setFoo(Foo $foo) {
-        $this->foo = $foo;
+        $this->set('foo', $foo);
         $this->dependencies[] = $foo;
     }
     
     public function asArray()
     {
-        $vars = get_object_vars($this);
-        unset($vars['noEntityVar']);
-        unset($vars['dependencies']);
-        
-        return $vars;
+        return array(
+            'lastname' => $this->get('lastname'),
+            'firstname' => $this->get('firstname'),
+            'foo' => $this->has('foo') ? $this->get('foo') : null
+        );
     }
-    
-    public function getType()
-    {
-        return 'Bar';
-    }
-    
+
     public function getDependencies() 
     {
         return $this->dependencies;

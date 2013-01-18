@@ -8,65 +8,77 @@ use mineichen\entityManager\proxy\Complementable;
 
 class Foo implements Observable, Managable, Complementable
 {
-    use entityObserver\IdTrait;
+    use entityObserver\EntityTrait;
     use proxy\LazyLoad;
-    
-    private $baz;
-    private $bat;
-    private $optional;
+
     private $valueToComplement;
-    
+
     public function __construct($baz, $bat)
     {
-        $this->baz = $baz;
-        $this->bat = $bat;
+        $this->setBaz($baz);
+        $this->setBat($bat);
     }
-    
+
     public function getType() {
         return 'Foo';
     }
-    
+
     public function asArray() {
         return array(
-            'bat' => $this->bat, 
-            'baz' => $this->baz,
-            'optional' => $this->optional,
-            'valueToComplement' => $this->valueToComplement
+            'bat' => $this->get('bat'),
+            'baz' => $this->get('baz'),
+            'optional' => $this->hasOptional() ? $this->getOptional() : null,
+            'valueToComplement' => $this->hasValueToComplement() ? $this->get('valueToComplement') : null
         );
-    }   
+    }
 
     public function setBaz($baz)
     {
-        $this->baz = $baz;
+        $this->set('baz', $baz);
     }
 
     public function setBat($bat)
     {
-        $this->bat = $bat;
+        $this->set('bat', $bat);
     }
 
     public function getBaz()
     {
-        return $this->baz;
+        return $this->has('baz') ? $this->get('baz') : null;
     }
 
     public function getBat()
     {
-        return $this->bat;
+        return $this->has('bat') ? $this->get('bat') : null;
     }
 
     public function setValueToComplement($value)
     {
-        $this->valueToComplement = $value;
+        $this->set('valueToComplement', $value);
     }
 
     public function getValueToComplement()
     {
-        return $this->lazyLoad($this->valueToComplement);
+        return $this->lazyLoad($this->hasValueToComplement() ? $this->get('valueToComplement') : null);
     }
-    
+
+    protected function hasValueToComplement()
+    {
+        return $this->has('valueToComplement');
+    }
+
     public function setOptional($value)
     {
-        $this->optional = $value;
+        $this->set('optional', $value);
+    }
+
+    public function hasOptional()
+    {
+        return $this->has('optional');
+    }
+
+    public function getOptional()
+    {
+        return $this->get('optional');
     }
 }
