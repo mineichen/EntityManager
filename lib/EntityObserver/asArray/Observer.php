@@ -1,8 +1,8 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver\asArray;
+namespace mineichen\entityManager\observer\asArray;
 
-use mineichen\entityManager\entityObserver\Observer as ObserverInterface;
+use mineichen\entityManager\observer\Observer as ObserverInterface;
 
 class Observer implements ObserverInterface
 {

@@ -12,7 +12,7 @@ class RepositorySandboxTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->loader = $this->getMock('mineichen\\entityManager\\Loader');
-        $this->identityMap = $this->getMockBuilder('mineichen\\entityManager\\repository\\IdentityMap')->disableOriginalConstructor()->getMock();
+        $this->identityMap = $this->getMockBuilder(__NAMESPACE__ . '\\IdentityMap')->disableOriginalConstructor()->getMock();
         $this->entityType = 'Test';
         $this->repository = new \mineichen\entityManager\repository\RepositorySandbox(
             $this->identityMap,

@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver;
+namespace mineichen\entityManager\observer;
 
 interface Generator
 {

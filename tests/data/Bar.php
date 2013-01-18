@@ -2,13 +2,13 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entityObserver\asArray\Observable;
+use mineichen\entityManager\observer\asArray\Observable;
 use mineichen\entityManager\repository\Managable;
 
 
 class Bar implements Observable, Managable, DependencyAware
 {
-    use entityObserver\EntityTrait;
+    use observer\EntityTrait;
     
     private $dependencies = array();
 

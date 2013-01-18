@@ -5,7 +5,7 @@ namespace mineichen\entityManager\action;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\repository\IdentityMap;
-use mineichen\entityManager\entityObserver\asArray\Observer;
+use mineichen\entityManager\observer\asArray\Observer;
 
 class Delete implements Action
 {

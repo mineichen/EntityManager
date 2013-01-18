@@ -1,9 +1,9 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver\asArray;
+namespace mineichen\entityManager\observer\asArray;
 
-use mineichen\entityManager\entityObserver\Generator as GeneratorInterface;
-use mineichen\entityManager\entityObserver\GeneratorException as Exception;
+use mineichen\entityManager\observer\Generator as GeneratorInterface;
+use mineichen\entityManager\observer\GeneratorException as Exception;
 
 class Generator implements GeneratorInterface
 {

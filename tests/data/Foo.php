@@ -2,13 +2,13 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entityObserver\asArray\Observable;
+use mineichen\entityManager\observer\asArray\Observable;
 use mineichen\entityManager\repository\Managable;
 use mineichen\entityManager\proxy\Complementable;
 
 class Foo implements Observable, Managable, Complementable
 {
-    use entityObserver\EntityTrait;
+    use observer\EntityTrait;
     use proxy\LazyLoad;
 
     private $valueToComplement;

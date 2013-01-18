@@ -36,7 +36,7 @@ class RepositoryFactory
     protected function getObserverFactory()
     {
         if (!$this->observerFactory) {
-            $this->observerFactory = new entityObserver\asArray\Generator();
+            $this->observerFactory = new observer\asArray\Generator();
         }
         
         return $this->observerFactory;

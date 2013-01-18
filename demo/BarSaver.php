@@ -3,7 +3,7 @@
 namespace mineichen\entityManager;
 
 use mineichen\entityManager\repository\Managable;
-use mineichen\entityManager\entityObserver\Observer;
+use mineichen\entityManager\observer\Observer;
 
 class BarSaver implements Saver
 {

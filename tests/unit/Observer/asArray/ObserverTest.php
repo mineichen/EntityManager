@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver\asArray;
+namespace mineichen\entityManager\observer\asArray;
 
 class ObserverTest extends \PHPUnit_Framework_TestCase 
 {
@@ -15,7 +15,7 @@ class ObserverTest extends \PHPUnit_Framework_TestCase
     
     public function testImplementsObservable()
     {
-        $this->assertInstanceOf('mineichen\\entityManager\\entityObserver\\Observer', $this->getObserver());
+        $this->assertInstanceOf('mineichen\\entityManager\\observer\\Observer', $this->getObserver());
     }
     
     public function testGetPristineDataReturnsEmptyArray()

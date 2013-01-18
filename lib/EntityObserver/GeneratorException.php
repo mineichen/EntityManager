@@ -1,5 +1,5 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver;
+namespace mineichen\entityManager\observer;
 
 class GeneratorException extends \mineichen\entitymanager\Exception{}

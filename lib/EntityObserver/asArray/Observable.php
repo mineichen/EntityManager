@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver\asArray;
+namespace mineichen\entityManager\observer\asArray;
 
 interface Observable
 {

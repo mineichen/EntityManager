@@ -2,8 +2,8 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entityObserver\Observable;
-use mineichen\entityManager\entityObserver\Observer;
+use mineichen\entityManager\observer\Observable;
+use mineichen\entityManager\observer\Observer;
 
 class BarLoader implements Loader
 {

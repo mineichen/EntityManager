@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\entityObserver\asArray;
+namespace mineichen\entityManager\observer\asArray;
 
 class GeneratorTest extends \PHPUnit_Framework_TestCase 
 {
@@ -14,12 +14,12 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     
     public function testImplementsObservable()
     {
-        $this->assertInstanceOf('mineichen\\entityManager\\entityObserver\\Generator', $this->generator);
+        $this->assertInstanceOf('mineichen\\entityManager\\observer\\Generator', $this->generator);
     }
     
     
     /**
-     * @expectedException mineichen\entitymanager\entityobserver\GeneratorException
+     * @expectedException mineichen\entitymanager\observer\GeneratorException
      */
     public function testThrowExceptionIfObserverIsNotFound()
     {
@@ -29,7 +29,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     public function testReturnAsArrayObserver()
     {
         $this->assertInstanceOf(
-            'mineichen\\entityManager\\entityObserver\\Observer',
+            'mineichen\\entityManager\\observer\\Observer',
             $this->generator->getInstanceFor(
                 $this->getMock(__NAMESPACE__ . '\\Observable')        
             )
