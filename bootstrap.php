@@ -1,7 +1,8 @@
 <?php
 
 namespace mineichen\entityManager;
-use mineichen\entityManager\action\plugin\proxy\FooComplementer;
+
+use mineichen\entityManager\proxy\RawDataComplementer;
 
 require_once __DIR__ . '/lib/autoload.php';
 require_once __DIR__ . '/tests/autoload.php';
@@ -13,7 +14,7 @@ require_once __DIR__ . '/demo/BarLoader.php';
 $factory = new ConfigFactory(
     array(
         array('entityType' => 'Bar', 'saver' => new BarSaver(), 'loader' => new BarLoader()),
-        array('entityType' => 'Foo', 'saver' => new FooSaver(), 'loader' => new FooLoader(), 'complementer' => new FooComplementer(new FooLoader()))
+        array('entityType' => 'Foo', 'saver' => new FooSaver(), 'loader' => new FooLoader(), 'complementer' => new RawDataComplementer(new FooLoader()))
     ),
     new RepositoryFactory()
 );

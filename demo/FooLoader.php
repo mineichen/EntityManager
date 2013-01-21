@@ -4,7 +4,7 @@ namespace mineichen\entityManager;
 
 use mineichen\entityManager\observer\Observable;
 use mineichen\entityManager\observer\Observer;
-use mineichen\entityManager\action\plugin\proxy\Complementable;
+use mineichen\entityManager\proxy\SimpleNotLoaded;
 
 class FooLoader implements Loader
 {
@@ -27,7 +27,7 @@ class FooLoader implements Loader
             $foo = $this->loadWithData($data);
 
             // Simulate incomplete Data
-            $foo->setValueToComplement(new \mineichen\entityManager\action\plugin\proxy\SimpleNotLoaded());
+            $foo->setValueToComplement(new SimpleNotLoaded());
 
 
             $entities[] =  $foo;
