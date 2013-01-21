@@ -2,11 +2,10 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\observer\asArray\Observable;
 use mineichen\entityManager\repository\Managable;
 
 
-class Bar implements Observable, Managable, DependencyAware
+class Bar implements Managable, DependencyAware
 {
     use observer\EntityTrait;
     
@@ -31,15 +30,6 @@ class Bar implements Observable, Managable, DependencyAware
     public function setFoo(Foo $foo) {
         $this->set('foo', $foo);
         $this->dependencies[] = $foo;
-    }
-    
-    public function asArray()
-    {
-        return array(
-            'lastname' => $this->get('lastname'),
-            'firstname' => $this->get('firstname'),
-            'foo' => $this->has('foo') ? $this->get('foo') : null
-        );
     }
 
     public function getDependencies() 
