@@ -19,7 +19,7 @@ class Set implements Event
 
     public function getType()
     {
-        return 'set';
+        return self::SET;
     }
 
     public function getCaller()

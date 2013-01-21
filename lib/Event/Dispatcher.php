@@ -15,7 +15,7 @@ class Dispatcher
         }
     }
 
-    public function on($eventType, $callable)
+    public function on($eventType, Callable $callable)
     {
         $this->callbacks[$eventType][] = $callable;
     }

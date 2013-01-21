@@ -2,6 +2,9 @@
 
 namespace mineichen\entityManager\entity;
 
+use mineichen\entityManager\Foo;
+use mineichen\entityManager\proxy\SimpleNotLoaded;
+
 class TraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -10,7 +13,7 @@ class TraitTest extends \PHPUnit_Framework_TestCase
     private $entity;
     public function setUp()
     {
-        $this->entity = new \mineichen\entityManager\Foo('baz', 'bat');
+        $this->entity = new Foo('baz', 'bat');
     }
 
     public function testHasReturnsFalseOnOptionalValue()
@@ -39,5 +42,27 @@ class TraitTest extends \PHPUnit_Framework_TestCase
     public function changeEventListener($event)
     {
         $this->assertInstanceOf(__NAMESPACE__ . '\\Event\\Set', $event);
+    }
+
+    public function testComplementEntity()
+    {
+        $foo = new Foo('baz', 'bat');
+        $foo->setValueToComplement('complemented :)');
+
+        $this->entity->setValueToComplement(new SimpleNotLoaded());
+        $this->entity->complement($foo);
+
+        $this->assertEquals(
+            $this->entity->getValueToComplement(),
+            'complemented :)'
+        );
+    }
+
+    /**
+     * @expectedException \mineichen\entityManager\Exception
+     */
+    public function testThrowsExceptionIfTryToComplementWithOtherInstanceThenSelf()
+    {
+        $this->entity->complement(new \mineichen\entityManager\Bar('firstname', 'lastname'));
     }
 }

@@ -59,7 +59,7 @@ trait EntityTrait {
         return array_key_exists($key, $this->data);
     }
 
-    public function on($eventType, $callable)
+    public function on($eventType, Callable $callable)
     {
         $this->getEventManager()->on($eventType, $callable);
     }

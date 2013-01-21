@@ -19,7 +19,7 @@ class Get implements Event
 
     public function getType()
     {
-        return 'get';
+        return self::GET;
     }
 
     public function getCaller()

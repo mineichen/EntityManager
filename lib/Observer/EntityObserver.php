@@ -11,7 +11,7 @@ class EntityObserver implements \mineichen\entityManager\observer\Observer
     public function __construct($subject)
     {
         $this->subject = $subject;
-        $this->subject->on('set', array($this, 'registerChange'));
+        $this->subject->on(event\Event::SET, array($this, 'registerChange'));
     }
 
     public function getType()
