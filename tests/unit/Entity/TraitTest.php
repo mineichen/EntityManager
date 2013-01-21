@@ -26,12 +26,10 @@ class TraitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $this->entity->getBaz());
     }
 
-    /**
-     * @expectedException \mineichen\entityManager\Exception
-     */
-    public function testGetOptionalThrowsException()
+
+    public function testGetOptionalReturnsNull()
     {
-        $this->entity->getOptional();
+        $this->assertNull($this->entity->getOptional());
     }
 
     public function testRegisterEntityEvent()

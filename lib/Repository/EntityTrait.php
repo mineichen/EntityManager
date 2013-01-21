@@ -43,10 +43,9 @@ trait EntityTrait {
     public function get($key)
     {
         if (!$this->has($key)) {
-            throw new \mineichen\entityManager\Exception(
-                sprintf('Value for key "%s" is not set!', $key)
-            );
+            return null;
         }
+        
         $this->getEventManager()->trigger(
             new event\Get($this, $key, $this->data[$key])
         );
