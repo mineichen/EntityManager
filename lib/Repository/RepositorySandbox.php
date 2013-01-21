@@ -11,9 +11,9 @@ use mineichen\entityManager\Loader;
 class RepositorySandbox implements Repository
 {
     /**
-     * @var \SplObjectStorage
+     * @var IdentityMap
      */
-    private $records;
+    private $identityMap;
     
     /**
      * @var string

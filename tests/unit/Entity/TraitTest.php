@@ -38,6 +38,6 @@ class TraitTest extends \PHPUnit_Framework_TestCase
 
     public function changeEventListener($event)
     {
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Event\\Change', $event);
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Event\\Set', $event);
     }
 }

@@ -121,7 +121,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $complementer = new proxy\FooComplementer($loader);
+        $complementer = new proxy\RawDataComplementer($loader);
 
         $manager = $this->createEntityManager(
             array('Foo', $saver, $loader, $complementer)
@@ -177,7 +177,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $complementer = new proxy\FooComplementer($loader);
+        $complementer = new proxy\RawDataComplementer($loader);
 
         $manager = $this->createEntityManager(
             array('Foo', $saver, $loader, $complementer)
@@ -268,7 +268,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $complementer = new proxy\FooComplementer($loader);
+        $complementer = new proxy\RawDataComplementer($loader);
 
         $loader->expects($this->once())
             ->method('findBy')

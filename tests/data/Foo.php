@@ -4,14 +4,10 @@ namespace mineichen\entityManager;
 
 use mineichen\entityManager\observer\asArray\Observable;
 use mineichen\entityManager\repository\Managable;
-use mineichen\entityManager\proxy\Complementable;
 
-class Foo implements Observable, Managable, Complementable
+class Foo implements Managable
 {
     use observer\EntityTrait;
-    use proxy\LazyLoad;
-
-    private $valueToComplement;
 
     public function __construct($baz, $bat)
     {
@@ -21,15 +17,6 @@ class Foo implements Observable, Managable, Complementable
 
     public function getType() {
         return 'Foo';
-    }
-
-    public function asArray() {
-        return array(
-            'bat' => $this->get('bat'),
-            'baz' => $this->get('baz'),
-            'optional' => $this->hasOptional() ? $this->getOptional() : null,
-            'valueToComplement' => $this->hasValueToComplement() ? $this->get('valueToComplement') : null
-        );
     }
 
     public function setBaz($baz)
@@ -59,7 +46,7 @@ class Foo implements Observable, Managable, Complementable
 
     public function getValueToComplement()
     {
-        return $this->lazyLoad($this->hasValueToComplement() ? $this->get('valueToComplement') : null);
+        return $this->get('valueToComplement');
     }
 
     protected function hasValueToComplement()
