@@ -86,7 +86,9 @@ trait EntityTrait {
         }
 
         array_walk($this->data, function($value, $key) use ($complete) {
-            if ($value instanceof NotLoaded) {
+            if($value instanceof Managable) {
+                $value->complement($complete->get($key));
+            } elseif ($value instanceof NotLoaded) {
                 $this->data[$key] = $complete->get($key);
             }
         });
