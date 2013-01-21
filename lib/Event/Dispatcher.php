@@ -19,4 +19,23 @@ class Dispatcher
     {
         $this->callbacks[$eventType][] = $callable;
     }
+
+    public function off($eventType, Callable $removeCallback)
+    {
+        $this->callbacks[$eventType] = array_filter(
+            $this->getEvents($eventType),
+            function($callback) use ($removeCallback) {
+                return $callback !== $removeCallback;
+            }
+        );
+    }
+
+    private function getEvents($eventType)
+    {
+        if (array_key_exists($eventType, $this->callbacks)) {
+            return $this->callbacks[$eventType];
+        }
+
+        return array();
+    }
 }

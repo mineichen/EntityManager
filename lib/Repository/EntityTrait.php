@@ -8,8 +8,9 @@ use mineichen\entityManager\repository\Managable;
 
 trait EntityTrait {
     private $id;
-    private $eventManager;
     private $data = array();
+
+    use \mineichen\entityManager\entity\ObservableTrait;
 
     public function hasId()
     {
@@ -28,11 +29,13 @@ trait EntityTrait {
 
     protected function set($key, $value)
     {
+        $current = $this->has($key) ? $this->data[$key] : null;
+        $this->setManagableEvents($current);
         $this->getEventManager()->trigger(
             new event\Set(
                 $this,
                 $key,
-                $this->has($key) ? $this->get($key) : null,
+                $current,
                 $value
             )
         );
@@ -40,17 +43,38 @@ trait EntityTrait {
         $this->data[$key] = $value;
     }
 
+    /**
+     * @todo Outsource into a Plugin
+     */
+    private function setManagableEvents($value)
+    {
+        if ($value instanceof Managable) {
+            if ($current instanceof $value) {
+                $current->off(event\Event::GET, array($this, 'redirectGetEvent'));
+            }
+
+            $value->on(event\Event::GET, array($this, 'redirectGetEvent'));
+        }
+    }
+
+    public function redirectGetEvent(event\Get $event)
+    {
+        $this->getEventManager()->trigger(
+            new event\Get(
+                $this,
+                $event->getKey(),
+                $event->getValue()
+            )
+        );
+    }
+
     public function get($key)
     {
-        if (!$this->has($key)) {
-            return null;
-        }
-        
         $this->getEventManager()->trigger(
-            new event\Get($this, $key, $this->data[$key])
+            new event\Get($this, $key, $this->has($key) ? $this->data[$key] : null)
         );
 
-        return $this->data[$key];
+        return $this->has($key) ? $this->data[$key] : null;
     }
 
     protected function has($key)
@@ -58,23 +82,9 @@ trait EntityTrait {
         return array_key_exists($key, $this->data);
     }
 
-    public function on($eventType, Callable $callable)
-    {
-        $this->getEventManager()->on($eventType, $callable);
-    }
-
-    public function getEventManager()
-    {
-        if (!$this->eventManager) {
-            $this->eventManager = new event\Dispatcher();
-        }
-
-        return $this->eventManager;
-    }
-
     public function complement(Managable $complete)
     {
-        if (get_class($complete) !== get_class($this)) {
+        if (!($complete instanceof self)) {
             throw new \mineichen\entityManager\Exception(
                 sprintf(
                     'Complement needs to be an instance of "%s", "%s" given!',
@@ -85,7 +95,7 @@ trait EntityTrait {
         }
 
         array_walk($this->data, function($value, $key) use ($complete) {
-            if($value instanceof Managable) {
+            if ($value instanceof Managable) {
                 $value->complement($complete->get($key));
             } elseif ($value instanceof NotLoaded) {
                 $this->data[$key] = $complete->get($key);

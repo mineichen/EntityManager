@@ -17,6 +17,7 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\configfactory' => '/Factory/ConfigManagerFactory.php',
                 'mineichen\\entitymanager\\dependencyaware' => '/DependencyAware.php',
                 'mineichen\\entitymanager\\entity\\observable' => '/Entity/Observable.php',
+                'mineichen\\entitymanager\\entity\\observabletrait' => '/Entity/ObserverTrait.php',
                 'mineichen\\entitymanager\\entitymanager' => '/EntityManager.php',
                 'mineichen\\entitymanager\\event\\dispatcher' => '/Event/Dispatcher.php',
                 'mineichen\\entitymanager\\event\\event' => '/Event/Event.php',
