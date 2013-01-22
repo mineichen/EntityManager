@@ -20,7 +20,7 @@ trait ObservableTrait
         $this->getEventManager()->off($eventType, $callable);
     }
 
-    public function getEventManager()
+    protected function getEventManager()
     {
         if (!$this->eventManager) {
             $this->eventManager = new event\Dispatcher();
