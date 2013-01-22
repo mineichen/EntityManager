@@ -44,6 +44,20 @@ trait ObservableTrait
         $this->data[$key] = $value;
     }
 
+    public function get($key)
+    {
+        $this->getEventManager()->trigger(
+            new event\Get($this, $key, $this->has($key) ? $this->data[$key] : null)
+        );
+
+        return $this->has($key) ? $this->data[$key] : null;
+    }
+
+    protected function has($key)
+    {
+        return array_key_exists($key, $this->data);
+    }
+
     private function setManagableEvents($current, $newValue)
     {
         if ($newValue instanceof Observable) {
@@ -78,19 +92,5 @@ trait ObservableTrait
                 $event->getNewValue()
             )
         );
-    }
-
-    public function get($key)
-    {
-        $this->getEventManager()->trigger(
-            new event\Get($this, $key, $this->has($key) ? $this->data[$key] : null)
-        );
-
-        return $this->has($key) ? $this->data[$key] : null;
-    }
-
-    protected function has($key)
-    {
-        return array_key_exists($key, $this->data);
     }
 }

@@ -2,11 +2,10 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\repository\Managable;
-use mineichen\entityManager\entity\Observable;
+use mineichen\entityManager\entity\EntityPart;
 
 
-class BarPart implements Observable
+class BarPart implements EntityPart
 {
     use entity\ObservableTrait;
 

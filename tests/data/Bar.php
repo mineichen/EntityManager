@@ -2,10 +2,9 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\repository\Managable;
-use mineichen\entityManager\entity\Observable;
+use mineichen\entityManager\entity\Entity;
 
-class Bar implements Managable, DependencyAware, Observable
+class Bar implements Entity, DependencyAware
 {
     use observer\EntityTrait;
     
