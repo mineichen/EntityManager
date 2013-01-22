@@ -3,7 +3,7 @@
 namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\EntityManager;
-use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Managable;
 use mineichen\entityManager\ActionPriorityGenerator;
 use mineichen\entityManager\Loader;
 

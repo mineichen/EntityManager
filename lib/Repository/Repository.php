@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\repository;
 
-use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Managable;
 
 interface Repository {
     public function getEntityType();

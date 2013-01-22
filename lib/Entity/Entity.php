@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\entity;
 
-use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Managable;
 
 interface Entity extends Observable, Managable
 {

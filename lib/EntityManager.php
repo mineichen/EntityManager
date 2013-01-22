@@ -29,12 +29,12 @@ class EntityManager
         return array_key_exists($type, $this->repos);
     }
     
-    public function persist(repository\Managable $subject)
+    public function persist(entity\Managable $subject)
     {
         $this->getRepository($subject->getType())->persist($subject);
     }
 
-    public function delete(repository\Managable $subject)
+    public function delete(entity\Managable $subject)
     {
         $this->getRepository($subject->getType())->delete($subject);
     }
@@ -49,7 +49,7 @@ class EntityManager
         return $this->getRepository($type)->findBy($config);
     }
     
-    public function isRegistered(repository\Managable $subject)
+    public function isRegistered(entity\Managable $subject)
     {
         return $this->getRepository($subject->getType())->isRegistered($subject);
     }
@@ -65,7 +65,7 @@ class EntityManager
         return false;
     }
     
-    public function flushEntity(repository\Managable $subject)
+    public function flushEntity(entity\Managable $subject)
     {
         $this->getRepository($subject->getType())->flushEntity($subject);
     }

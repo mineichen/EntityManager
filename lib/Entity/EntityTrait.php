@@ -4,7 +4,7 @@ namespace mineichen\entityManager\entity;
 
 use mineichen\entityManager\event;
 use mineichen\entityManager\proxy\NotLoaded;
-use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Managable;
 
 trait EntityTrait {
     private $id;

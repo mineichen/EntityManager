@@ -2,7 +2,6 @@
 
 namespace mineichen\entityManager;
 
-
 class Foo implements entity\Entity
 {
     use entity\EntityTrait;

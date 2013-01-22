@@ -23,7 +23,7 @@ class RepositorySandboxTest extends \PHPUnit_Framework_TestCase
 
     public function testFindByRegistersEntityAtIdentityMap()
     {
-        $subject = $this->getMock(__NAMESPACE__ . '\\Managable');
+        $subject = $this->getMock('mineichen\\entityManager\\entity\\Managable');
 
         $this->loader->expects($this->once())
             ->method('findBy')

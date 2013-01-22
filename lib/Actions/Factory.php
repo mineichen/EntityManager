@@ -5,7 +5,7 @@ namespace mineichen\entityManager\action;
 use mineichen\entityManager\Exception;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\observer\Generator as ObserverFactory;
-use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Managable;
 use mineichen\entityManager\repository\IdentityMap;
 use mineichen\entityManager\proxy\Complementer;
 

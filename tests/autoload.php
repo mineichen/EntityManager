@@ -8,6 +8,7 @@ spl_autoload_register(
         if ($classes === null) {
             $classes = array(
                 'mineichen\\entitymanager\\bar' => '/data/Bar.php',
+                'mineichen\\entitymanager\\barpart' => '/data/BarPart.php',
                 'mineichen\\entitymanager\\foo' => '/data/Foo.php'
             );
         }
