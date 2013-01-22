@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\event;
 
-use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Observable;
 
 class Get implements Event
 {
@@ -10,7 +10,7 @@ class Get implements Event
     private $key;
     private $value;
 
-    public function __construct(Managable $caller, $key, $value)
+    public function __construct(Observable $caller, $key, $value)
     {
         $this->caller = $caller;
         $this->key = $key;

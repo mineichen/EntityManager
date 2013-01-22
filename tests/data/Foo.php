@@ -2,10 +2,10 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\observer\asArray\Observable;
+use mineichen\entityManager\entity\Observable;
 use mineichen\entityManager\repository\Managable;
 
-class Foo implements Managable
+class Foo implements Managable, Observable
 {
     use observer\EntityTrait;
 

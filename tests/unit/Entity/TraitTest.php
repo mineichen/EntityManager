@@ -4,6 +4,7 @@ namespace mineichen\entityManager\entity;
 
 use mineichen\entityManager\Foo;
 use mineichen\entityManager\proxy\SimpleNotLoaded;
+use mineichen\entityManager\event;
 
 class TraitTest extends \PHPUnit_Framework_TestCase
 {
@@ -62,5 +63,25 @@ class TraitTest extends \PHPUnit_Framework_TestCase
     public function testThrowsExceptionIfTryToComplementWithOtherInstanceThenSelf()
     {
         $this->entity->complement(new \mineichen\entityManager\Bar('firstname', 'lastname'));
+    }
+
+    public function testSetManagableDependency()
+    {
+        $part = new \mineichen\entityManager\BarPart();
+        $bar = new \mineichen\entityManager\Bar('firstName', 'lastName');
+        $bar->setPart($part);
+
+        $this->assertSame($part, $bar->getPart());
+
+        $observer = $this->getMockBuilder('mineichen\\entityManager\\Bar')
+                        ->disableOriginalConstructor()
+                        ->getMock();
+
+        $observer->expects($this->once())
+            ->method('setId');
+
+        $bar->on(event\Event::GET, array($observer, 'setId'));
+
+        $part->getValue();
     }
 }

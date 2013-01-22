@@ -3,9 +3,9 @@
 namespace mineichen\entityManager;
 
 use mineichen\entityManager\repository\Managable;
+use mineichen\entityManager\entity\Observable;
 
-
-class Bar implements Managable, DependencyAware
+class Bar implements Managable, DependencyAware, Observable
 {
     use observer\EntityTrait;
     
@@ -35,5 +35,15 @@ class Bar implements Managable, DependencyAware
     public function getDependencies() 
     {
         return $this->dependencies;
+    }
+
+    public function setPart(BarPart $part)
+    {
+        $this->set('part', $part);
+    }
+
+    public function getPart()
+    {
+        return $this->get('part');
     }
 }

@@ -2,6 +2,8 @@
 
 namespace mineichen\entityManager\event;
 
+use mineichen\entityManager\entity\Observable;
+
 class Set implements Event
 {
     private $caller;
@@ -9,7 +11,7 @@ class Set implements Event
     private $oldValue;
     private $newValue;
 
-    public function __construct($caller, $key, $oldValue, $newValue)
+    public function __construct(Observable $caller, $key, $oldValue, $newValue)
     {
         $this->caller = $caller;
         $this->key = $key;
