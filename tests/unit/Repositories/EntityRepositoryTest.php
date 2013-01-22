@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\repository;
 
-class RepositorySandboxTest extends \PHPUnit_Framework_TestCase
+class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     private $loader;
     private $identityMap;
@@ -14,7 +14,7 @@ class RepositorySandboxTest extends \PHPUnit_Framework_TestCase
         $this->loader = $this->getMock('mineichen\\entityManager\\Loader');
         $this->identityMap = $this->getMockBuilder(__NAMESPACE__ . '\\IdentityMap')->disableOriginalConstructor()->getMock();
         $this->entityType = 'Test';
-        $this->repository = new \mineichen\entityManager\repository\RepositorySandbox(
+        $this->repository = new EntityRepository(
             $this->identityMap,
             $this->entityType,
             $this->loader

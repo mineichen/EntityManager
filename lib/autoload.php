@@ -40,7 +40,7 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\repository\\identitymap' => '/Repository/IdentityMap.php',
                 'mineichen\\entitymanager\\repository\\managable' => '/Entity/Managable.php',
                 'mineichen\\entitymanager\\repository\\repository' => '/Repository/Repository.php',
-                'mineichen\\entitymanager\\repository\\repositorysandbox' => '/Repository/RepositorySandbox.php',
+                'mineichen\\entitymanager\\repository\\repositorysandbox' => '/Repository/EntityRepositoryphp',
                 'mineichen\\entitymanager\\repositoryexception' => '/Repository/RepositoryException.php',
                 'mineichen\\entitymanager\\repositoryfactory' => '/Factory/RepositoryFactory.php',
                 'mineichen\\entitymanager\\saver' => '/Repository/Saver.php'

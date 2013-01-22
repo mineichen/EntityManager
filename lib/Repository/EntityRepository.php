@@ -8,7 +8,7 @@ use mineichen\entityManager\ActionPriorityGenerator;
 use mineichen\entityManager\Loader;
 
 
-class RepositorySandbox implements Repository
+class EntityRepository implements Repository
 {
     /**
      * @var IdentityMap

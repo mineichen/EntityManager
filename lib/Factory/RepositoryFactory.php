@@ -8,7 +8,7 @@ class RepositoryFactory
     
     public function get($entityType, Saver $saver, Loader $loader, proxy\Complementer $complementer = null)
     {
-        $repo = new repository\RepositorySandbox(
+        $repo = new repository\EntityRepository(
             $this->getIdentityMap($saver, $complementer),
             $entityType,
             $loader
