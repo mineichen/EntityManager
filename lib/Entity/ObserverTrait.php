@@ -3,6 +3,7 @@
 namespace mineichen\entityManager\entity;
 
 use mineichen\entityManager\event;
+use mineichen\entityManager\entity\EntityPart;
 
 trait ObservableTrait
 {
@@ -60,8 +61,8 @@ trait ObservableTrait
 
     private function setManagableEvents($current, $newValue)
     {
-        if ($newValue instanceof Observable) {
-            if ($current instanceof Observable) {
+        if ($newValue instanceof EntityPart) {
+            if ($current instanceof EntityPart) {
                 $current->off(event\Event::GET, array($this, 'redirectGetEvent'));
                 $current->off(event\Event::SET, array($this, 'redirectSetEvent'));
             }
