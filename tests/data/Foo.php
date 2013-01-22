@@ -2,11 +2,10 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entity\Entity;
 
-class Foo implements Entity
+class Foo implements entity\Entity
 {
-    use observer\EntityTrait;
+    use entity\EntityTrait;
 
     public function __construct($baz, $bat)
     {

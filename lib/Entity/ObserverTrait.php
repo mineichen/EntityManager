@@ -34,12 +34,7 @@ trait ObservableTrait
         $current = $this->has($key) ? $this->data[$key] : null;
         $this->setManagableEvents($current, $value);
         $this->getEventManager()->trigger(
-            new event\Set(
-                $this,
-                $key,
-                $current,
-                $value
-            )
+            new event\Set($this, $key, $current, $value)
         );
 
         $this->data[$key] = $value;

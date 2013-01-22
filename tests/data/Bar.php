@@ -2,11 +2,9 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\entity\Entity;
-
-class Bar implements Entity, DependencyAware
+class Bar implements entity\Entity, DependencyAware
 {
-    use observer\EntityTrait;
+    use entity\EntityTrait;
     
     private $dependencies = array();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\observer;
+namespace mineichen\entityManager\entity;
 
 use mineichen\entityManager\event;
 use mineichen\entityManager\proxy\NotLoaded;
