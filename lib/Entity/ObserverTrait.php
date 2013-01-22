@@ -44,13 +44,10 @@ trait ObservableTrait
         $this->data[$key] = $value;
     }
 
-    /**
-     * @todo Outsource into a Plugin
-     */
     private function setManagableEvents($current, $newValue)
     {
         if ($newValue instanceof Observable) {
-            if ($current instanceof $newValue) {
+            if ($current instanceof Observable) {
                 $current->off(event\Event::GET, array($this, 'redirectGetEvent'));
             }
             $newValue->on(event\Event::GET, array($this, 'redirectGetEvent'));
