@@ -48,4 +48,14 @@ class Set implements Event
     {
         return $this->getNewValue() !== $this->getOldValue();
     }
+
+    public function cloneForCaller(Observable $caller)
+    {
+        return new self(
+            $caller,
+            $this->getKey(),
+            $this->getOldValue(),
+            $this->getNewValue()
+        );
+    }
 }

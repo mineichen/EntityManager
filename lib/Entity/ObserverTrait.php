@@ -62,36 +62,20 @@ trait ObservableTrait
     private function setManagableEvents($current, $newValue)
     {
         if ($newValue instanceof Observable && !($newValue instanceof Managable)) {
-            $newValue->on(event\Event::GET, array($this, 'redirectGetEvent'));
-            $newValue->on(event\Event::SET, array($this, 'redirectSetEvent'));
+            $newValue->on(event\Event::GET, array($this, 'redirectEvent'));
+            $newValue->on(event\Event::SET, array($this, 'redirectEvent'));
         }
 
-        if ($current instanceof Observable && !($newValue instanceof Managable)) {
-            $current->off(event\Event::GET, array($this, 'redirectGetEvent'));
-            $current->off(event\Event::SET, array($this, 'redirectSetEvent'));
+        if ($current instanceof Observable && !($current instanceof Managable)) {
+            $current->off(event\Event::GET, array($this, 'redirectEvent'));
+            $current->off(event\Event::SET, array($this, 'redirectEvent'));
         }
     }
 
-    public function redirectGetEvent(event\Get $event)
+    public function redirectEvent(event\Event $event)
     {
         $this->getEventManager()->trigger(
-            new event\Get(
-                $this,
-                $event->getKey(),
-                $event->getValue()
-            )
-        );
-    }
-
-    public function redirectSetEvent(event\Set $event)
-    {
-        $this->getEventManager()->trigger(
-            new event\Set(
-                $this,
-                $event->getKey(),
-                $event->getOldValue(),
-                $event->getNewValue()
-            )
+            $event->cloneForCaller($this)
         );
     }
 }

@@ -36,4 +36,13 @@ class Get implements Event
     {
         return $this->value;
     }
+
+    public function cloneForCaller(Observable $caller)
+    {
+        return new self(
+            $caller,
+            $this->getKey(),
+            $this->getValue()
+        );
+    }
 }
