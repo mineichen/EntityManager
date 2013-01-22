@@ -1,8 +1,8 @@
 {
     "name": "mineichen/entity-manager",
     "minimum-stability": "dev",
-    "description": "Simple EntityManager which provides",
-    "keywords": ["pubsup", "entityManager", "proxy", "entity"],
+    "description": "Simple, modular EntityManager with minimal dependencies on entities",
+    "keywords": ["pubsub", "entityManager", "proxy", "entity"],
     "homepage": "https://github.com/mineichen/EntityManager",
     "type": "library",
     "license": "MIT",
