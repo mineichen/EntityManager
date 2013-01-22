@@ -45,7 +45,18 @@ class Factory
                     $identityMap
                 );
         }
-        
-        throw new Exception(sprintf('No action found for type "%s"', $type));
+    }
+
+    protected function getClassNameForType($type)
+    {
+        switch ($type) {
+            case 'create':
+                return __NAMESPACE__ . '\\Create';
+            case 'update':
+                return __NAMESPACE__ . '\\Update';
+            case 'delete':
+                return __NAMESPACE__ . '\\Delete';
+        }
+        throw new Exception(sprintf('No actionClass found for type "%s"', $type));
     }
 }

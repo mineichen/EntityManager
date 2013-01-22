@@ -65,7 +65,7 @@ class TraitTest extends \PHPUnit_Framework_TestCase
         $this->entity->complement(new \mineichen\entityManager\Bar('firstname', 'lastname'));
     }
 
-    public function testSetManagableDependency()
+    public function testSetEntityPartInheritsItsEvents()
     {
         $part = new \mineichen\entityManager\BarPart();
         $bar = new \mineichen\entityManager\Bar('firstName', 'lastName');
@@ -81,6 +81,31 @@ class TraitTest extends \PHPUnit_Framework_TestCase
             ->method('setId');
 
         $bar->on(event\Event::GET, array($observer, 'setId'));
+
+        $part->getValue();
+    }
+
+    /**
+     * @depends testSetEntityPartInheritsItsEvents
+     */
+    public function testSetEntityPartRemovesEventsOnCurrentEntityPart()
+    {
+        $part = new \mineichen\entityManager\BarPart();
+        $newPart = new \mineichen\entityManager\BarPart();
+
+        $bar = new \mineichen\entityManager\Bar('firstName', 'lastName');
+        $bar->setPart($part);
+
+        $observer = $this->getMockBuilder('mineichen\\entityManager\\Bar')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $observer->expects($this->never())
+            ->method('setId');
+
+        $bar->on(event\Event::GET, array($observer, 'setId'));
+
+        $bar->setPart($newPart);
 
         $part->getValue();
     }
