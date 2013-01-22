@@ -49,8 +49,11 @@ trait ObservableTrait
         if ($newValue instanceof Observable) {
             if ($current instanceof Observable) {
                 $current->off(event\Event::GET, array($this, 'redirectGetEvent'));
+                $current->off(event\Event::SET, array($this, 'redirectSetEvent'));
             }
+
             $newValue->on(event\Event::GET, array($this, 'redirectGetEvent'));
+            $newValue->on(event\Event::SET, array($this, 'redirectSetEvent'));
         }
     }
 
@@ -61,6 +64,18 @@ trait ObservableTrait
                 $this,
                 $event->getKey(),
                 $event->getValue()
+            )
+        );
+    }
+
+    public function redirectSetEvent(event\Set $event)
+    {
+        $this->getEventManager()->trigger(
+            new event\Set(
+                $this,
+                $event->getKey(),
+                $event->getOldValue(),
+                $event->getNewValue()
             )
         );
     }
