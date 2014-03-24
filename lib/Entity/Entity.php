@@ -7,4 +7,6 @@ use mineichen\entityManager\proxy\Complementable;
 
 interface Entity extends Observable, Managable, Complementable
 {
+    public function asArray();
+    public function asJson();
 }

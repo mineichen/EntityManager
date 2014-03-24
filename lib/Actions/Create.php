@@ -11,26 +11,19 @@ class Create implements Action
 {
     private $entityRepository;
     private $subject;
-    private $saver;
     
-    public function __construct(Managable $subject, Saver $saver, EntityRepository $entityRepository)
+    public function __construct(Managable $subject, EntityRepository $entityRepository)
     {
         $this->subject = $subject;
-        $this->saver = $saver;
         $this->entityRepository = $entityRepository;
     }
 
-    public function performAction()
+    public function performAction(Saver $saver)
     {
-        $this->saver->create($this->subject);
+        $saver->create($this->subject);
         $this->entityRepository->attach($this->subject, 'update');
     }
     
-    public function hasNeedForAction()
-    {
-        return true;
-    }
-
     public function getSubject()
     {
         return $this->subject;

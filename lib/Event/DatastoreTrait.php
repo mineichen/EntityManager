@@ -36,6 +36,16 @@ trait DatastoreTrait {
         return array_key_exists($key, $this->data);
     }
 
+    public function asArray()
+    {
+        return $this->data;
+    }
+
+    public function asJson()
+    {
+        return json_encode($this->asArray());
+    }
+
     public function redirectEvent(Event $event)
     {
         $this->trigger(

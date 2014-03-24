@@ -10,6 +10,7 @@ use mineichen\entityManager\event\Dispatcher;
 use mineichen\entityManager\event\ObservableTrait;
 use mineichen\entityManager\Exception;
 use mineichen\entityManager\Loader;
+use mineichen\entityManager\Saver;
 use mineichen\entityManager\repository\Plugin\FlushPlugin;
 use mineichen\entityManager\repository\Plugin\ManagePlugin;
 
@@ -30,17 +31,24 @@ class EntityRepository implements Repository
 
     private $managePlugins = [];
     private $flushPlugins = [];
+    private $actionTypes = [
+        'create' => 'mineichen\\entityManager\\action\\Create',
+        'update' => 'mineichen\\entityManager\\action\\Update',
+        'delete' => 'mineichen\\entityManager\\action\\Delete',
+    ];
 
     /**
      * @param IdentityMap $identityMap
      * @param $entityType
      * @param \mineichen\entityManager\Loader $loader
      */
-    public function __construct(IdentityMap $identityMap, $entityType, Loader $loader, Factory $actionFactory)
+    public function __construct(IdentityMap $identityMap, $entityType, Loader $loader, Saver $saver, Factory $actionFactory)
     {
         $this->identityMap = $identityMap;
         $this->entityType = $entityType;
         $this->loader = $loader;
+        $this->saver = $saver;
+        $this->addPlugin($saver);
         $this->actionFactory = $actionFactory;
     }
 
@@ -114,16 +122,10 @@ class EntityRepository implements Repository
         foreach($this->flushPlugins as $plugin) {
             $plugin->onFlush($action);
         }
-        $action->performAction();
+        $action->performAction($this->saver);
+
         foreach($this->flushPlugins as $plugin) {
             $plugin->afterFlush($action);
-        }
-    }
-
-    public function appendChangesTo(ActionPriorityGenerator $generator)
-    {
-        foreach($this->identityMap as $subject) {
-            $generator->appendSubject($subject);
         }
     }
 
@@ -145,16 +147,6 @@ class EntityRepository implements Repository
             && $this->identityMap->hasActionFor($subject);
     }
 
-    public function hasNeedForFlush()
-    {
-        foreach($this->identityMap as $subject) {
-            if($this->identityMap->getActionFor($subject)->hasNeedForAction()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     /**
      * @param Managable $subject
@@ -162,22 +154,17 @@ class EntityRepository implements Repository
      */
     public function attach(Managable $subject, $actionType)
     {
-        if(!$this->matchesType($subject)) {
-            throw new Exception(sprintf(
-                'Subject with type "%s" is not supported in Repository with type "%s"',
-                $subject->getType(),
-                $this->getEntityType()
-            ));
-        }
-
-        if($this->identityMap->hasActionFor($subject)) {
-            $this->detach($subject);
-        }
+        $this->assertSupport($subject);
 
         $action =  $this->actionFactory->getInstanceFor($subject, $actionType, $this);
-        foreach($this->managePlugins as $plugin) {
-            $plugin->onAttach($subject, $actionType);
+
+        if(!$this->identityMap->hasActionFor($subject)) {
+            foreach($this->managePlugins as $plugin) {
+                $plugin->onAttach($subject);
+            }
         }
+
+
 
         $this->identityMap->attach($action);
     }
@@ -204,8 +191,26 @@ class EntityRepository implements Repository
         $this->identityMap->detach($subject);
     }
 
-    private function matchesType(Managable $subject)
+    protected function matchesType(Managable $subject)
     {
         return $subject->getType() === $this->entityType;
+    }
+
+    protected function assertSupport(Managable $subject)
+    {
+        if(!$this->matchesType($subject)) {
+            throw new Exception(sprintf(
+                'Subject with type "%s" is not supported in Repository with type "%s"',
+                $subject->getType(),
+                $this->getEntityType()
+            ));
+        }
+    }
+
+    protected function createAction(Managable $subject, $actionType)
+    {
+        if(!array_key_exists($actionType, $this->actionTypes)) {
+
+        }
     }
 }

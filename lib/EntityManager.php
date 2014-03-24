@@ -60,17 +60,6 @@ class EntityManager
         return $this->getRepository($subject->getType())->isRegistered($subject);
     }
     
-    public function hasNeedForFlush()
-    {
-        foreach($this->repos as $repo) {
-            if ($repo->hasNeedForFlush()) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
     public function flush()
     {
         foreach($this->repos as $repo) {

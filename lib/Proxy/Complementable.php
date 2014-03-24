@@ -13,5 +13,6 @@ use mineichen\entityManager\event\Get;
 
 interface Complementable {
     public function isComplementable($key);
-    public function complement(Complementable $complementable);
+    public function complement(array $data);
+    public function addFragmentKeys($key1, $key2=null);
 } 

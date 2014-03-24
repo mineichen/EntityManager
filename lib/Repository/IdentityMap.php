@@ -9,35 +9,52 @@ use mineichen\entityManager\entity\Managable;
 
 class IdentityMap implements \IteratorAggregate
 {
-    private $map;
-
-    public function __construct()
-    {
-        $this->map = new \SplObjectStorage();
-    }
+    private $actions = [];
+    private $subjects = [];
 
     public function attach(Action $action)
     {
-        $this->map->attach($action->getSubject(), $action);
+        $i = array_search($action->getSubject(), $this->subjects);
+
+        if ($i === false) {
+            $this->actions[] = $action;
+            $this->subjects[] = $action->getSubject();
+            return false;
+        }
+
+
+        $this->actions[$i] = $action;
+        return true;
     }
 
     public function detach(Managable $subject)
     {
-        $this->map->detach($subject);
+        $i = $this->getIndex($subject);
+        unset($this->actions[$i]);
+        unset($this->subjects[$i]);
     }
 
     public function getActionFor(Managable $subject)
     {
-        return $this->map->offsetGet($subject);
+        return $this->actions[$this->getIndex($subject)];
     }
 
     public function hasActionFor(Managable $subject)
     {
-        return $this->map->offsetExists($subject);
+        return in_array($subject, $this->subjects, true);
     }
 
     public function getIterator()
     {
-        return $this->map;
+        return new \ArrayIterator(array_values($this->subjects));
+    }
+
+    private function getIndex(Managable $subject)
+    {
+        $i = array_search($subject, $this->subjects);
+        if ($i === false) {
+            throw new Exception('No Action found for type "%s" and id "%s"', $subject->getType() ,$subject->getId());
+        }
+        return $i;
     }
 }

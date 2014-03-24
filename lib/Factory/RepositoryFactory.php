@@ -7,7 +7,6 @@ use mineichen\entityManager\repository\Plugin\Plugin;
 
 class RepositoryFactory
 {
-    private $observerFactory;
     private $manager;
     private $defaultPlugins;
 
@@ -23,7 +22,8 @@ class RepositoryFactory
             $this->getIdentityMap(),
             $entityType,
             $loader,
-            $this->getActionFactory($saver)
+            $saver,
+            $this->getActionFactory()
         );
 
         foreach(array_merge($this->defaultPlugins, $plugins) as $plugin) {
@@ -57,7 +57,7 @@ class RepositoryFactory
             case 'Dependency':
                 return new DependencyPlugin($this->manager);
             case 'Complementer':
-                return new repository\plugin\ComplementerPlugin(new proxy\RawDataComplementer($loader));
+                return new repository\plugin\ComplementerPlugin(new proxy\TraitComplementer($loader));
         }
 
         if (is_string($name)) {
@@ -71,21 +71,9 @@ class RepositoryFactory
     {
         return new repository\IdentityMap();
     }
-    
-    protected function getActionFactory(Saver $saver)
+
+    protected function getActionFactory()
     {
-        return new action\Factory(
-            $this->getObserverFactory(),
-            $saver
-        );
-    }
-    
-    protected function getObserverFactory()
-    {
-        if (!$this->observerFactory) {
-            $this->observerFactory = new observer\asArray\Generator();
-        }
-        
-        return $this->observerFactory;
+        return new action\Factory();
     }
 }

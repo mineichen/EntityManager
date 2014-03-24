@@ -13,12 +13,14 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->actionFactory = $this->getMockBuilder('mineichen\\entityManager\\action\\Factory')->disableOriginalConstructor()->getMock();
         $this->loader = $this->getMock('mineichen\\entityManager\\Loader');
+        $this->saver = $this->getMock('mineichen\\entityManager\\Saver');
         $this->identityMap = $this->getMockBuilder(__NAMESPACE__ . '\\IdentityMap')->disableOriginalConstructor()->getMock();
         $this->entityType = 'Test';
         $this->repository = new EntityRepository(
             $this->identityMap,
             $this->entityType,
             $this->loader,
+            $this->saver,
             $this->actionFactory
         );
     }

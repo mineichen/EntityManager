@@ -4,6 +4,7 @@ namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\Exception;
 use mineichen\entityManager\repository\EntityRepository;
+use mineichen\entityManager\repository\Repository;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\observer\Generator as ObserverFactory;
 use mineichen\entityManager\entity\Managable;
@@ -12,49 +13,19 @@ use mineichen\entityManager\proxy\Complementer;
 
 class Factory 
 {
-    private $observerFactory;
-    private $saver;
-    
-    public function __construct(ObserverFactory $observerFactory, Saver $saver)
-    {
-        $this->observerFactory = $observerFactory;
-        $this->saver = $saver;
-    }
-    
-    public function getInstanceFor(Managable $subject, $type, EntityRepository $entityRepository)
-    {
-        switch ($type) {
-            case 'create':
-                return new Create(
-                    $subject, 
-                    $this->saver,
-                    $entityRepository
-                );
-            case 'update':
-                return new Update(
-                    $this->saver,
-                    $this->observerFactory->getInstanceFor($subject),
-                    $entityRepository
-                );
-            case 'delete':
-                return new Delete(
-                    $this->saver,
-                    $this->observerFactory->getInstanceFor($subject),
-                    $entityRepository
-                );
-        }
-    }
+    private $actionTypes = [
+        'create' => 'mineichen\\entityManager\\action\\Create',
+        'update' => 'mineichen\\entityManager\\action\\Update',
+        'delete' => 'mineichen\\entityManager\\action\\Delete',
+    ];
 
-    protected function getClassNameForType($type)
+    public function getInstanceFor(Managable $subject, $type, Repository $repo)
     {
-        switch ($type) {
-            case 'create':
-                return __NAMESPACE__ . '\\Create';
-            case 'update':
-                return __NAMESPACE__ . '\\Update';
-            case 'delete':
-                return __NAMESPACE__ . '\\Delete';
+        if (!array_key_exists($type, $this->actionTypes)) {
+            throw new Exception(sprintf('Action Type "%s" is not supported', $type));
         }
-        throw new Exception(sprintf('No actionClass found for type "%s"', $type));
+        $class = $this->actionTypes[$type];
+
+        return new $class($subject, $repo);
     }
 }

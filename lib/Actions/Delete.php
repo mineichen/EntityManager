@@ -10,30 +10,23 @@ use mineichen\entityManager\observer\Observer;
 
 class Delete implements Action
 {
-    private $saver;
-    private $observer;
+    private $subject;
     private $entityRepository;
 
-    public function __construct(Saver $saver, Observer $observer, EntityRepository $entityRepository) {
-        $this->saver = $saver;
-        $this->observer = $observer;
+    public function __construct(Managable $subject, EntityRepository $entityRepository) {
+        $this->subject = $subject;
         $this->entityRepository = $entityRepository;
     }
 
-    public function performAction()
+    public function performAction(Saver $saver)
     {
-        $this->saver->delete($this->observer);
+        $saver->delete($this->getSubject());
         $this->entityRepository->detach($this->getSubject());
     }
 
     public function getSubject()
     {
-        return $this->observer->getSubject();
-    }
-
-    public function hasNeedForAction()
-    {
-        return true;
+        return $this->subject;
     }
 
     public function subjectExistsAfterPerformAction()

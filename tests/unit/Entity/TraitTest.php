@@ -48,8 +48,8 @@ class TraitTest extends \PHPUnit_Framework_TestCase
         $foo = new Foo('baz', 'bat');
         $foo->setValueToComplement('complemented :)');
 
-        $this->entity->setValueToComplement(new SimpleNotLoaded());
-        $this->entity->complement($foo);
+        $this->entity->addFragmentKeys('valueToComplement');
+        $this->entity->complement(['valueToComplement' => 'complemented :)']);
 
         $this->assertEquals(
             $this->entity->getValueToComplement(),
@@ -57,13 +57,6 @@ class TraitTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \mineichen\entityManager\Exception
-     */
-    public function testThrowsExceptionIfTryToComplementWithOtherInstanceThenSelf()
-    {
-        $this->entity->complement(new \mineichen\entityManager\Bar('firstname', 'lastname'));
-    }
 
     public function testSetEntityPartInheritsItsEvents()
     {

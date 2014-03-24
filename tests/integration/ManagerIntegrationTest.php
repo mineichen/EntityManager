@@ -107,12 +107,12 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Foo('baz', 'bat');
         $foo->setId(1234);
-        $foo->setValueToComplement($this->getMock('mineichen\entityManager\proxy\NotLoaded'));
+        $foo->addFragmentKeys('valueToComplement');
+
 
         $completeFoo = new Foo('completeBaz', 'completeBat');
         $completeFoo->setId(1234);
         $completeFoo->setValueToComplement('complementValue');
-
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
@@ -148,11 +148,9 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Foo('baz', 'bat');
         $foo->setId(1234);
-        $foo->setValueToComplement($this->getMock('mineichen\entityManager\proxy\NotLoaded'));
 
         $foo2 = new Foo('baz', 'bat');
         $foo2->setId(12345);
-        $foo2->setValueToComplement($this->getMock('mineichen\entityManager\proxy\NotLoaded'));
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
@@ -166,15 +164,11 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array($foo, $foo2)));
 
 
-        $saver->expects($this->once())
+        $saver->expects($this->exactly(2))
             ->method('update')
-            ->with($this->getObserverForSubjectConstraint($foo));
+            ->with($this->logicalOr($foo, $foo2));
 
-        $entity = $manager->findBy('Foo', array())[0];
-
-
-        $manager->flush();
-        $entity->setBaz('newValueForTest');
+        $manager->findBy('Foo', array());
         $manager->flush();
     }
 
@@ -197,7 +191,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $saver->expects($this->once())
             ->method('update')
-            ->with($this->getObserverForSubjectConstraint($foo));
+            ->with($foo);
 
         $foo->setBat('Something else');
 
@@ -222,7 +216,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $saver->expects($this->once())
             ->method('delete')
-            ->with($this->getObserverForSubjectConstraint($returnFoo));
+            ->with($returnFoo);
 
         $foo = $manager->find('Foo', 10);
         $manager->delete($foo);
@@ -232,11 +226,11 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager->find('Foo', 10);
     }
 
-    public function testEntityIsNotDirtyAfterComplementingIt()
+    private function complementHelperMethod(Saver $saver)
     {
         $foo = new Foo('baz', 'bat');
         $foo->setId(10);
-        $foo->setValueToComplement(new \mineichen\entityManager\proxy\SimpleNotLoaded());
+        $foo->addFragmentKeys('valueToComplement');
 
         $completeFoo = new Foo('baz', 'bat');
         $completeFoo->setId(10);
@@ -244,7 +238,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
 
         $loader = $this->mockLoader();
-        $saver = $this->mockSaver();
 
         $loader->expects($this->once())
             ->method('findBy')
@@ -260,24 +253,21 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         );
 
         $entity = $manager->findBy('Foo', [])[0];
-        $entity->getValueToComplement();
-
-        $this->assertFalse($manager->hasNeedForFlush());
+        $this->assertEquals('Real Value', $entity->getValueToComplement());
 
         return array($manager, $entity);
     }
 
-    /**
-     * @depends testEntityIsNotDirtyAfterComplementingIt
-     */
-    public function testEntityIsDirtyAfterComplementingAndThenChange($props)
+    public function testEntityIsDirtyAfterComplementingAndThenChange()
     {
-        $manager = $props[0];
-        $entity = $props[1];
+        $saver = $this->mockSaver();
+        $saver->expects($this->once())
+            ->method('update');
 
-        $entity->setValueToComplement('adsfaslue');
+        $props = $this->complementHelperMethod($saver);
 
-        $this->assertTrue($manager->hasNeedForFlush());
+        $props[1]->setValueToComplement('adsfaslue');
+        $props[0]->flush();
     }
 
     /*
@@ -305,13 +295,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = new EntityManager();
         (new RepositoryFactory($manager))->addWithConfig($config);
         return $manager;
-    }
-
-    private function getObserverForSubjectConstraint($subject)
-    {
-        return $this->callback(function($observer) use ($subject) {
-            return $observer->getSubject() === $subject;
-        });
     }
 
     private function mockLoader()

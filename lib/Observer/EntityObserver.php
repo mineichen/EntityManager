@@ -14,11 +14,6 @@ class EntityObserver implements \mineichen\entityManager\observer\Observer
         $this->subject->on(event\Event::SET, array($this, 'registerChange'));
     }
 
-    public function getType()
-    {
-        return 'observer';
-    }
-
     public function registerChange(event\Set $event)
     {
         if ($event->hasValueChanged()) {
@@ -26,9 +21,13 @@ class EntityObserver implements \mineichen\entityManager\observer\Observer
         }
     }
 
-    public function getDiffs()
+    public function getDiffs($reset = true)
     {
-        return $this->changes;
+        $changes = $this->changes;
+        if($reset) {
+            $this->changes = [];
+        }
+        return $changes;
     }
 
     public function hasDiffs()

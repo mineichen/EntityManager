@@ -5,7 +5,7 @@ namespace mineichen\entityManager\proxy;
 use mineichen\entityManager\Loader;
 use mineichen\entityManager\event;
 
-class RawDataComplementer implements Complementer
+class TraitComplementer implements Complementer
 {
     private $loader;
 
@@ -20,7 +20,7 @@ class RawDataComplementer implements Complementer
 
         if ($subject->isComplementable($event->getKey())) {
             $subject->complement(
-                $this->loader->find($subject->getId())
+                $this->loader->find($subject->getId())->asArray()
             );
         }
     }

@@ -12,30 +12,31 @@ use mineichen\entityManager\proxy\NotLoaded;
 use mineichen\entityManager\proxy\Complementable;
 
 trait ComplementableTrait {
-    public function complement(Complementable $complete)
-    {
-        if (!($complete instanceof self)) {
-            throw new \mineichen\entityManager\Exception(
-                sprintf(
-                    'Complement needs to be an instance of "%s", "%s" given!',
-                    get_class($this),
-                    get_class($complete)
-                )
-            );
-        }
+    private $fragmentKeys = [];
 
-        array_walk($this->data, function($value, $key) use ($complete) {
-            if ($value instanceof Complementable) {
-                $value->complement($complete->get($key));
+    public function addFragmentKeys($key1, $key2 = null)
+    {
+        $this->fragmentKeys = array_flip(func_get_args() + $this->fragmentKeys);
+    }
+
+    public function getFragmentKeys()
+    {
+        return $this->fragmentKeys;
+    }
+
+    public function complement(array $data)
+    {
+        array_walk($data, function($value, $key) {
+            if ($this->has($key) && $this->data[$key] instanceof Complementable) {
+                $this->data[$key]->complement($value);
             } elseif ($this->isComplementable($key)) {
-                $this->data[$key] = $complete->get($key);
+                $this->data[$key] = $value;
             }
         });
     }
 
     public function isComplementable($key)
     {
-        return array_key_exists($key, $this->data)
-            && $this->data[$key] instanceof NotLoaded;
+        return array_key_exists($key, $this->fragmentKeys);
     }
 } 
