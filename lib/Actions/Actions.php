@@ -6,4 +6,5 @@ interface Action {
     public function performAction();
     public function hasNeedForAction();
     public function getSubject();
+    public function subjectExistsAfterPerformAction();
 }

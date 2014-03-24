@@ -2,17 +2,18 @@
 
 namespace mineichen\entityManager;
 
-class EntityManager 
+use mineichen\entityManager\repository\EntityRepository;
+
+class EntityManager
 {
     /**
      * @var array
      */
     private $repos = array();
 
-    public function addRepository($repo)
+    public function addRepository(EntityRepository $repo)
     {
         $this->repos[$repo->getEntityType()] = $repo;
-        $repo->setEntityManager($this);
     }
 
     public function getRepository($type)
@@ -38,13 +39,18 @@ class EntityManager
     {
         $this->getRepository($subject->getType())->delete($subject);
     }
+
+    public function contains(entity\Managable $subject)
+    {
+        $this->getRepository($subject->getType())->contains($subject);
+    }
     
     public function find($type, $id) 
     {
         return $this->getRepository($type)->find($id);
     }
 
-    public function findBy($type, array $config = array())
+    public function findBy($type, array $config)
     {
         return $this->getRepository($type)->findBy($config);
     }
@@ -65,51 +71,16 @@ class EntityManager
         return false;
     }
     
+    public function flush()
+    {
+        foreach($this->repos as $repo) {
+            $repo->flush();
+        }
+    }
+
     public function flushEntity(entity\Managable $subject)
     {
         $this->getRepository($subject->getType())->flushEntity($subject);
-    }
-    
-    public function flush()
-    {
-        foreach ($this->createPriorityQueueGenerator()->createQueue() as $entity) {
-            $this->flushEntity($entity);
-        }
-    }
-
-    protected function createPriorityQueueGenerator()
-    {
-        $generator = new ActionPriorityGenerator();
-
-        $this->resolveAllDependencies();
-
-        foreach ($this->repos as $repo) {
-            $repo->appendChangesTo($generator);
-        }
-
-        return $generator;
-    }
-
-    protected function resolveAllDependencies()
-    {
-        foreach($this->repos as $repo) {
-            foreach ($repo->getDirtyActions() as $record) {
-                $this->resolveDependencies($record);
-            }
-        }
-    }
-    
-    protected function resolveDependencies(action\Action $record)
-    {
-        $subject = $record->getSubject();
-    
-        if (!($subject instanceof DependencyAware)) {
-            return;
-        }
-        
-        foreach ($subject->getDependencies() as $dependency) {
-            $this->persist($dependency);
-        }
     }
 }
 

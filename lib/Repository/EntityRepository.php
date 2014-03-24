@@ -2,10 +2,16 @@
 
 namespace mineichen\entityManager\repository;
 
+use mineichen\entityManager\action\Factory;
 use mineichen\entityManager\EntityManager;
 use mineichen\entityManager\entity\Managable;
 use mineichen\entityManager\ActionPriorityGenerator;
+use mineichen\entityManager\event\Dispatcher;
+use mineichen\entityManager\event\ObservableTrait;
+use mineichen\entityManager\Exception;
 use mineichen\entityManager\Loader;
+use mineichen\entityManager\repository\Plugin\FlushPlugin;
+use mineichen\entityManager\repository\Plugin\ManagePlugin;
 
 
 class EntityRepository implements Repository
@@ -20,21 +26,33 @@ class EntityRepository implements Repository
      */
     private $entityType;
 
-    /**
-     * @var \mineichen\entityManager\EntityManager
-     */
-    private $manager;
+    private $actionFactory;
+
+    private $managePlugins = [];
+    private $flushPlugins = [];
 
     /**
      * @param IdentityMap $identityMap
      * @param $entityType
      * @param \mineichen\entityManager\Loader $loader
      */
-    public function __construct(IdentityMap $identityMap, $entityType, Loader $loader)
+    public function __construct(IdentityMap $identityMap, $entityType, Loader $loader, Factory $actionFactory)
     {
         $this->identityMap = $identityMap;
         $this->entityType = $entityType;
         $this->loader = $loader;
+        $this->actionFactory = $actionFactory;
+    }
+
+    public function addPlugin(plugin\Plugin $plugin)
+    {
+        if ($plugin instanceof ManagePlugin) {
+            $this->managePlugins[] = $plugin;
+        }
+
+        if($plugin instanceof FlushPlugin) {
+            $this->flushPlugins[] = $plugin;
+        }
     }
 
     /**
@@ -52,7 +70,7 @@ class EntityRepository implements Repository
 
     public function delete(Managable $subject)
     {
-        $this->identityMap->attach($subject, 'delete');
+        $this->attach($subject, 'delete');
     }
 
     public function find($id)
@@ -67,7 +85,7 @@ class EntityRepository implements Repository
         return $subject;
     }
 
-    public function findBy(array $config = array())
+    public function findBy(array $config)
     {
         return array_map(
             function($newEntity) {
@@ -83,50 +101,44 @@ class EntityRepository implements Repository
         );
     }
 
+    public function flush()
+    {
+        foreach($this->identityMap as $subject) {
+            $this->flushEntity($subject);
+        }
+    }
+
     public function flushEntity(Managable $subject)
     {
-        $this->identityMap->getActionFor($subject)->performAction();
+        $action = $this->identityMap->getActionFor($subject);
+        foreach($this->flushPlugins as $plugin) {
+            $plugin->onFlush($action);
+        }
+        $action->performAction();
+        foreach($this->flushPlugins as $plugin) {
+            $plugin->afterFlush($action);
+        }
     }
 
     public function appendChangesTo(ActionPriorityGenerator $generator)
     {
-        $this->identityMap->appendChangesTo($generator);
+        foreach($this->identityMap as $subject) {
+            $generator->appendSubject($subject);
+        }
     }
 
     private function fetchSubjectForId($id)
     {
-        $result = $this->identityMap->getSubjectsForId($id);
-        
-        switch (count($result)) {
-            case 0:
-                return false;
-            case 1;
-                return array_values($result)[0];
-            default:
-                throw new Exception(sprintf('Multiple Instances with same ID "%s" registered!', $id));
-        }
-    }
-    
-    public function getDirtyActions()
-    {
-        return array_map(
-            function($subject) {
-                return $this->identityMap->getActionFor($subject);
-            }, 
-            $this->getDirtySubjects()
-        );
-    }
-    
-    private function getDirtySubjects()
-    {  
-        return array_filter(
-            $this->identityMap->asArray(),
-            function(Managable $subject) {
-                return $this->identityMap->getActionFor($subject)->hasNeedForAction();
+        foreach($this->identityMap as $subject) {
+            if($subject->hasId() && $subject->getId() === $id) {
+                return $subject;
             }
-        );
+        }
+        return false;
     }
     
+
+
     public function isRegistered(Managable $subject)
     {
         return $this->matchesType($subject)
@@ -135,44 +147,65 @@ class EntityRepository implements Repository
 
     public function hasNeedForFlush()
     {
-        return (bool) $this->getDirtyActions();
+        foreach($this->identityMap as $subject) {
+            if($this->identityMap->getActionFor($subject)->hasNeedForAction()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
     /**
      * @param Managable $subject
      * @param $actionType
-     * @return \mineichen\entityManager\action\Action
      */
-    private function attach(Managable $subject, $actionType)
+    public function attach(Managable $subject, $actionType)
     {
-        if ($action = $this->identityMap->hasActionFor($subject)) {
-            return $this->identityMap->getActionFor($subject);
+        if(!$this->matchesType($subject)) {
+            throw new Exception(sprintf(
+                'Subject with type "%s" is not supported in Repository with type "%s"',
+                $subject->getType(),
+                $this->getEntityType()
+            ));
         }
 
-        return $this->identityMap->attach($subject, $actionType);
+        if($this->identityMap->hasActionFor($subject)) {
+            $this->detach($subject);
+        }
+
+        $action =  $this->actionFactory->getInstanceFor($subject, $actionType, $this);
+        foreach($this->managePlugins as $plugin) {
+            $plugin->onAttach($subject, $actionType);
+        }
+
+        $this->identityMap->attach($action);
+    }
+
+    public function contains(Managable $subject)
+    {
+        return $this->identityMap->hasActionFor($subject);
+    }
+
+    public function detach(Managable $subject)
+    {
+        if(!$this->identityMap->hasActionFor($subject)) {
+            throw new Exception(sprintf(
+                'Subject from type="%s" and id="%s" does\'t exist',
+                $subject->getType(),
+                $subject->getId()
+            ));
+        }
+
+        foreach($this->managePlugins as $plugin) {
+            $plugin->onDetach($subject);
+        }
+
+        $this->identityMap->detach($subject);
     }
 
     private function matchesType(Managable $subject)
     {
         return $subject->getType() === $this->entityType;
-    }
-
-    public function setEntityManager(EntityManager $manager)
-    {
-        $this->manager = $manager;
-
-        if (!$manager->hasRepository($this->getEntityType())) {
-            $this->manager->addRepository($this);
-        }
-    }
-
-    public function getEntityManager()
-    {
-        if (!($this->manager instanceof EntityManager)) {
-            throw new Exception('Repository needs to be linked with a Manager to perform this Action!');
-        }
-
-        return $this->manager;
     }
 }

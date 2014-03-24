@@ -29,16 +29,7 @@ class ConfigFactory
     
     protected function appendRepositories(EntityManager $manager)
     {
-        foreach ($this->config as $config) {
-            $repo = $this->repoFactory->get(
-                $config['entityType'],
-                $config['saver'],
-                $config['loader'],
-                (array_key_exists('complementer', $config) ? $config['complementer'] : null)
-            );
 
-            $manager->addRepository($repo);
-        }
     }
 }
 

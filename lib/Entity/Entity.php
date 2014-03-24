@@ -2,8 +2,9 @@
 
 namespace mineichen\entityManager\entity;
 
-use mineichen\entityManager\entity\Managable;
+use mineichen\entityManager\event\Observable;
+use mineichen\entityManager\proxy\Complementable;
 
-interface Entity extends Observable, Managable
+interface Entity extends Observable, Managable, Complementable
 {
 }

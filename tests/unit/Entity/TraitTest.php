@@ -78,7 +78,10 @@ class TraitTest extends \PHPUnit_Framework_TestCase
                         ->getMock();
 
         $observer->expects($this->once())
-            ->method('setId');
+            ->method('setId')
+            /*->with($this->callback(function(event\Get $e) {
+                $this->assertEquals('value', $e->getPrevious()->getKey());
+            }))*/;
 
         $bar->on(event\Event::GET, array($observer, 'setId'));
 

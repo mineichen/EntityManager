@@ -2,8 +2,6 @@
 
 namespace mineichen\entityManager\event;
 
-use mineichen\entityManager\entity\Observable;
-
 class Get implements Event
 {
     private $caller;

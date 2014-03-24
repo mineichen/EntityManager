@@ -8,7 +8,8 @@ interface Repository {
     public function getEntityType();
     public function persist(Managable $subject);
     public function find($id);
-    public function findBy(array $config = array());
+    public function findBy(array $config);
     public function delete(Managable $subject);
+    public function flush();
     public function flushEntity(Managable $subject);
 }

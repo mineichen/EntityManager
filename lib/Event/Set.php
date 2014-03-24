@@ -2,21 +2,21 @@
 
 namespace mineichen\entityManager\event;
 
-use mineichen\entityManager\entity\Observable;
-
 class Set implements Event
 {
     private $caller;
     private $key;
     private $oldValue;
     private $newValue;
+    private $previous;
 
-    public function __construct(Observable $caller, $key, $oldValue, $newValue)
+    public function __construct(Observable $caller, $key, $oldValue, $newValue, Set $previous = null)
     {
         $this->caller = $caller;
         $this->key = $key;
         $this->oldValue = $oldValue;
         $this->newValue = $newValue;
+        $this->previous = $previous;
     }
 
     public function getType()
@@ -47,6 +47,11 @@ class Set implements Event
     public function hasValueChanged()
     {
         return $this->getNewValue() !== $this->getOldValue();
+    }
+
+    public function getPrevious()
+    {
+        return $this->previous;
     }
 
     public function cloneForCaller(Observable $caller)

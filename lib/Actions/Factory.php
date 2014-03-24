@@ -3,6 +3,7 @@
 namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\Exception;
+use mineichen\entityManager\repository\EntityRepository;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\observer\Generator as ObserverFactory;
 use mineichen\entityManager\entity\Managable;
@@ -11,38 +12,35 @@ use mineichen\entityManager\proxy\Complementer;
 
 class Factory 
 {
-    private $complementer;
     private $observerFactory;
     private $saver;
     
-    public function __construct(ObserverFactory $observerFactory, Saver $saver, Complementer $complementer = null)
+    public function __construct(ObserverFactory $observerFactory, Saver $saver)
     {
         $this->observerFactory = $observerFactory;
         $this->saver = $saver;
-        $this->complementer = $complementer;
     }
     
-    public function getInstanceFor(Managable $subject, $type, IdentityMap $identityMap)
+    public function getInstanceFor(Managable $subject, $type, EntityRepository $entityRepository)
     {
         switch ($type) {
             case 'create':
                 return new Create(
                     $subject, 
                     $this->saver,
-                    $identityMap
+                    $entityRepository
                 );
             case 'update':
                 return new Update(
                     $this->saver,
                     $this->observerFactory->getInstanceFor($subject),
-                    $identityMap,
-                    $this->complementer
+                    $entityRepository
                 );
             case 'delete':
                 return new Delete(
                     $this->saver,
                     $this->observerFactory->getInstanceFor($subject),
-                    $identityMap
+                    $entityRepository
                 );
         }
     }

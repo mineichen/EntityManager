@@ -7,7 +7,7 @@ use mineichen\entityManager\entity\EntityPart;
 
 class BarPart implements EntityPart
 {
-    use entity\ObservableTrait;
+    use event\DatastoreTrait;
 
     public function setValue($value)
     {

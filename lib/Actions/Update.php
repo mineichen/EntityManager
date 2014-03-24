@@ -3,6 +3,7 @@
 namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\observer\Observer;
+use mineichen\entityManager\repository\EntityRepository;
 use mineichen\entityManager\Saver;
 use mineichen\entityManager\repository\IdentityMap;
 use mineichen\entityManager\proxy\Complementer;
@@ -10,26 +11,21 @@ use mineichen\entityManager\event;
 
 class Update implements Action
 {
-    private $identityMap;
+    private $entityRepository;
     private $saver;
     private $observer;
 
-    public function __construct(Saver $saver, Observer $observer, IdentityMap $identityMap, Complementer $complementer = null) {
+    public function __construct(Saver $saver, Observer $observer, EntityRepository $entityRepository) {
         $this->saver = $saver;
         $this->observer = $observer;
-        $this->identityMap = $identityMap;
-
-        // @todo Remove Complementer Instanceof
-        if ($complementer instanceof \mineichen\entityManager\proxy\Complementer) {
-            $observer->getSubject()->on('get', array($complementer, 'complement'));
-        }
+        $this->entityRepository = $entityRepository;
     }
 
     public function performAction()
     {
         if ($this->hasNeedForAction()) {
             $this->saver->update($this->observer);
-            $this->identityMap->attach($this->getSubject(), 'update');
+            $this->entityRepository->attach($this->getSubject(), 'update');
         }
     }
 
@@ -41,5 +37,10 @@ class Update implements Action
     public function hasNeedForAction()
     {
         return $this->observer->hasDiffs();
+    }
+
+    public function subjectExistsAfterPerformAction()
+    {
+        return true;
     }
 }

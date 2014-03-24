@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager\event;
 
-class Dispatcher
+trait ObservableTrait
 {
     private $callbacks = [];
 

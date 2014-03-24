@@ -20,6 +20,7 @@ $factory = new ConfigFactory(
 );
 
 $manager = $factory->get();
+
 /*
 $foo = new Foo('Value1', 'Value2');
 $bar = new Bar('Hans', 'Muster');

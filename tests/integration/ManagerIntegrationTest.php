@@ -84,25 +84,20 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $saver = $this->mockSaver();
         
         $manager = $this->createEntityManager(
-                array('Bar', $saver, $subloader),
-                array('Foo', $saver, $deploader)
+            array('Bar', $saver, $subloader),
+            array('Foo', $saver, $deploader)
         );
-        
+
         $saver
             ->expects($this->at(0))
             ->method('create')
-            ->with($this->callback(function($observable) use ($dependency) {
-                return $observable === $dependency;
-            })
-        );
+            ->with($dependency);
         
         $saver
             ->expects($this->at(1))
             ->method('create')
-            ->with($this->callback(function($observable) use ($subject) {
-                return $observable === $subject;
-            })
-        );
+            ->with($subject);
+
         
         $manager->persist($subject);
         $manager->flush();
@@ -121,11 +116,11 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $complementer = new proxy\RawDataComplementer($loader);
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader, $complementer)
+            array('Foo', $saver, $loader, ['Complementer'])
         );
+
 
         $loader->expects($this->once())
             ->method('findBy')
@@ -149,22 +144,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         return [$manager, $entity, $loader];
     }
 
-    /**
-     * @depends testProxyEntity
-     */
-    public function testFindByReturnsSameInstanceOnTheSecondTime($params)
-    {
-        $manager = $params[0];
-        $entity = $params[1];
-        $loader = $params[2];
-
-        $loader->expects($this->once())
-            ->method('findBy')
-            ->will($this->returnValue(array($entity)));
-
-        $this->assertSame($entity, $manager->findBy('Foo', array())[0]);
-    }
-
     public function testEntitysLoadedWithLoadByAreFlushable()
     {
         $foo = new Foo('baz', 'bat');
@@ -177,10 +156,9 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $complementer = new proxy\RawDataComplementer($loader);
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader, $complementer)
+            array('Foo', $saver, $loader)
         );
 
         $loader->expects($this->once())
@@ -194,10 +172,9 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $entity = $manager->findBy('Foo', array())[0];
 
-        $this->assertFalse($manager->hasNeedForFlush());
-        $entity->setBaz('newValueForTest');
-        $this->assertTrue($manager->hasNeedForFlush());
 
+        $manager->flush();
+        $entity->setBaz('newValueForTest');
         $manager->flush();
     }
 
@@ -268,7 +245,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
         $loader = $this->mockLoader();
         $saver = $this->mockSaver();
-        $complementer = new proxy\RawDataComplementer($loader);
 
         $loader->expects($this->once())
             ->method('findBy')
@@ -280,10 +256,10 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($completeFoo));
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader, $complementer)
+            array('Foo', $saver, $loader, ['Complementer'])
         );
 
-        $entity = $manager->findBy('Foo')[0];
+        $entity = $manager->findBy('Foo', [])[0];
         $entity->getValueToComplement();
 
         $this->assertFalse($manager->hasNeedForFlush());
@@ -304,26 +280,31 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($manager->hasNeedForFlush());
     }
 
+    /*
+    public function testManagerThrowsExceptionOnRecursiveDependencies()
+    {
+        $foo = $this->getMock('');
+        $this->createEntityManager(
+            ['foo', $this->mockSaver(), $this->mockLoader()]
+        );
+    }*/
+
     private function createEntityManager()
     {
         $config = array();
         
         foreach (func_get_args() as $arg) {
-            $record = array(
+            $config[]  = array(
                 'entityType' => $arg[0],
                 'saver' => $arg[1],
-                'loader' => $arg[2]
+                'loader' => $arg[2],
+                'plugins' => array_key_exists(3, $arg) ? $arg[3] : []
             );
-
-            if (array_key_exists(3, $arg)) {
-                $record['complementer'] = $arg[3];
-            }
-
-            $config[] = $record;
         }
-        
-        $factory = new ConfigFactory($config, new RepositoryFactory());
-        return $factory->get();
+
+        $manager = new EntityManager();
+        (new RepositoryFactory($manager))->addWithConfig($config);
+        return $manager;
     }
 
     private function getObserverForSubjectConstraint($subject)
@@ -333,11 +314,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    private function mockComplementer()
-    {
-        return $this->getMock('mineichen\\entitiyManager\\proxy\\Complementer');
-    }
-    
     private function mockLoader()
     {
         return $this->getMock('mineichen\\entityManager\\Loader');

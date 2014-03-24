@@ -18,7 +18,7 @@ class RawDataComplementer implements Complementer
     {
         $subject = $event->getCaller();
 
-        if ($event->getValue() instanceof \mineichen\entityManager\proxy\NotLoaded) {
+        if ($subject->isComplementable($event->getKey())) {
             $subject->complement(
                 $this->loader->find($subject->getId())
             );

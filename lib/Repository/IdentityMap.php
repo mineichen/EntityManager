@@ -2,37 +2,28 @@
 
 namespace mineichen\entityManager\repository;
 
+use mineichen\entityManager\action\Action;
 use mineichen\entityManager\ActionPriorityGenerator;
 use mineichen\entityManager\action\Factory;
 use mineichen\entityManager\entity\Managable;
 
-class IdentityMap
+class IdentityMap implements \IteratorAggregate
 {
     private $map;
-    private $actionFactory;
 
-    public function __construct(Factory $actionFactory)
+    public function __construct()
     {
         $this->map = new \SplObjectStorage();
-        $this->actionFactory = $actionFactory;
     }
 
-    public function attach(Managable $subject, $actionType)
+    public function attach(Action $action)
     {
-        $action = $this->actionFactory->getInstanceFor($subject, $actionType, $this);
         $this->map->attach($action->getSubject(), $action);
-
-        return $action;
     }
 
     public function detach(Managable $subject)
     {
         $this->map->detach($subject);
-    }
-
-    public function asArray()
-    {
-        return iterator_to_array($this->map);
     }
 
     public function getActionFor(Managable $subject)
@@ -45,18 +36,8 @@ class IdentityMap
         return $this->map->offsetExists($subject);
     }
 
-    public function getSubjectsForId($id)
+    public function getIterator()
     {
-        return array_filter(
-            $this->asArray(),
-            function(Managable $subject) use ($id) {
-                return $subject->hasId() && $subject->getId() === $id;
-            }
-        );
-    }
-
-    public function appendChangesTo(ActionPriorityGenerator $generator)
-    {
-        $generator->appendChanges($this->map);
+        return $this->map;
     }
 }

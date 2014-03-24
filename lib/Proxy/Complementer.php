@@ -6,5 +6,5 @@ use mineichen\entityManager\event;
 
 interface Complementer
 {
-    public function complement(event\Get $subject);
+    public function complement(event\Get $event);
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace mineichen\entityManager\entity;
+namespace mineichen\entityManager\event;
 
 interface Observable
 {

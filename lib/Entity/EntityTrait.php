@@ -3,12 +3,13 @@
 namespace mineichen\entityManager\entity;
 
 use mineichen\entityManager\event;
-use mineichen\entityManager\proxy\NotLoaded;
-use mineichen\entityManager\entity\Managable;
+use mineichen\entityManager\proxy\ComplementableTrait;
+
 
 trait EntityTrait {
     private $id;
-    use \mineichen\entityManager\entity\ObservableTrait;
+    use event\DatastoreTrait {set as storeSet; }
+    use ComplementableTrait;
 
     public function hasId()
     {
@@ -19,30 +20,30 @@ trait EntityTrait {
     {
         $this->id = $id;
     }
-    
+
+    protected function set($key, $value)
+    {
+        $this->setManagableEvents($this->has($key) ? $this->data[$key] : null, $value);
+        return $this->storeSet($key, $value);
+    }
+
+    private function setManagableEvents($current, $newValue)
+    {
+
+        if ($newValue instanceof event\Observable && !($newValue instanceof Managable)) {
+            $newValue->on(event\Event::GET, array($this, 'redirectEvent'));
+            $newValue->on(event\Event::SET, array($this, 'redirectEvent'));
+        }
+
+        if ($current instanceof event\Observable && !($current instanceof Managable)) {
+            $current->off(event\Event::GET, array($this, 'redirectEvent'));
+            $current->off(event\Event::SET, array($this, 'redirectEvent'));
+        }
+
+    }
+
     public function getId()
     {
         return $this->id;
-    }
-
-    public function complement(Managable $complete)
-    {
-        if (!($complete instanceof self)) {
-            throw new \mineichen\entityManager\Exception(
-                sprintf(
-                    'Complement needs to be an instance of "%s", "%s" given!',
-                    get_class($this),
-                    get_class($complete)
-                )
-            );
-        }
-
-        array_walk($this->data, function($value, $key) use ($complete) {
-            if ($value instanceof Managable) {
-                $value->complement($complete->get($key));
-            } elseif ($value instanceof NotLoaded) {
-                $this->data[$key] = $complete->get($key);
-            }
-        });
     }
 }

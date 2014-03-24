@@ -2,7 +2,7 @@
 
 namespace mineichen\entityManager;
 
-class Bar implements entity\Entity, DependencyAware
+class Bar implements entity\Entity, entity\DependencyAware
 {
     use entity\EntityTrait;
     
