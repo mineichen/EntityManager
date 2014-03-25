@@ -11,17 +11,14 @@ use mineichen\entityManager\observer\Observer;
 class Delete implements Action
 {
     private $subject;
-    private $entityRepository;
 
-    public function __construct(Managable $subject, EntityRepository $entityRepository) {
+    public function __construct(Managable $subject) {
         $this->subject = $subject;
-        $this->entityRepository = $entityRepository;
     }
 
-    public function performAction(Saver $saver)
+    public function getType()
     {
-        $saver->delete($this->getSubject());
-        $this->entityRepository->detach($this->getSubject());
+        return 'delete';
     }
 
     public function getSubject()
@@ -32,5 +29,10 @@ class Delete implements Action
     public function subjectExistsAfterPerformAction()
     {
         return false;
+    }
+
+    public function getNextAction()
+    {
+        return;
     }
 }

@@ -6,10 +6,7 @@
  * Time: 17:51
  */
 
-namespace mineichen\entityManager\repository\Plugin;
-
-
-use mineichen\entityManager\entity\Managable;
+namespace mineichen\entityManager\repository\plugin;
 
 interface Plugin {
 } 

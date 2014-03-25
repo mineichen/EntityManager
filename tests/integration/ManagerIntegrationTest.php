@@ -2,16 +2,17 @@
 
 namespace mineichen\entityManager;
 
+use mineichen\entityManager\repository\plugin\Plugin;
+
 class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     public function testFindEntity()
     {
         $loader = $this->mockLoader();
-        $saver = $this->mockSaver();
         $entity = new Bar('', '');
         $entity->setId(10);
         
-        $manager = $this->createEntityManager(array('Bar', $saver, $loader));
+        $manager = $this->createEntityManager(array('Bar', $loader));
                 
         $loader->expects($this->once())
             ->method('find')
@@ -30,11 +31,10 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     public function testLoadEntityOnlyOnce()
     {
         $loader = $this->mockLoader();
-        $saver = $this->mockSaver();
         $entity = new Bar('','');
         $entity->setId(10);
         
-        $manager = $this->createEntityManager(array('Bar', $saver, $loader));
+        $manager = $this->createEntityManager(array('Bar', $loader));
         
         $loader->expects($this->once())
             ->method('find')
@@ -59,7 +59,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $entity = new Bar('','');
         $entity->setId(10);
         
-        $manager = $this->createEntityManager(array('Bar', $saver, $loader));
+        $manager = $this->createEntityManager(array('Bar', $loader, [$saver]));
         
         $loader->expects($this->once())
             ->method('find')
@@ -79,13 +79,12 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $subject = new Bar('', '');
         $subject->setFoo($dependency);
         
-        $subloader = $this->mockLoader();
-        $deploader = $this->mockLoader();
+        $loader = $this->mockLoader();
         $saver = $this->mockSaver();
         
         $manager = $this->createEntityManager(
-            array('Bar', $saver, $subloader),
-            array('Foo', $saver, $deploader)
+            array('Bar', $loader, [$saver]),
+            array('Foo', $loader, [$saver])
         );
 
         $saver
@@ -115,10 +114,9 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $completeFoo->setValueToComplement('complementValue');
 
         $loader = $this->mockLoader();
-        $saver = $this->mockSaver();
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader, ['Complementer'])
+            array('Foo', $loader, ['Complementer'])
         );
 
 
@@ -156,7 +154,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $saver = $this->mockSaver();
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader)
+            array('Foo', $loader, [$saver])
         );
 
         $loader->expects($this->once())
@@ -179,7 +177,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $saver = $this->mockSaver();
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader)
+            array('Foo', $loader, [$saver])
         );
 
         $saver->expects($this->once())
@@ -206,7 +204,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $saver = $this->mockSaver();
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader)
+            array('Foo', $loader, [$saver])
         );
 
         $loader->expects($this->exactly(2))
@@ -226,7 +224,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager->find('Foo', 10);
     }
 
-    private function complementHelperMethod(Saver $saver)
+    private function complementHelperMethod(Plugin $plugin)
     {
         $foo = new Foo('baz', 'bat');
         $foo->setId(10);
@@ -249,7 +247,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($completeFoo));
 
         $manager = $this->createEntityManager(
-            array('Foo', $saver, $loader, ['Complementer'])
+            array('Foo', $loader, ['Complementer', $plugin])
         );
 
         $entity = $manager->findBy('Foo', [])[0];
@@ -286,9 +284,8 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         foreach (func_get_args() as $arg) {
             $config[]  = array(
                 'entityType' => $arg[0],
-                'saver' => $arg[1],
-                'loader' => $arg[2],
-                'plugins' => array_key_exists(3, $arg) ? $arg[3] : []
+                'loader' => $arg[1],
+                'plugins' => array_key_exists(2, $arg) ? $arg[2] : []
             );
         }
 
@@ -304,6 +301,6 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
     
     private function mockSaver()
     {
-        return $this->getMock('mineichen\\entityManager\\Saver');
+        return $this->getMockForAbstractClass('mineichen\\entityManager\\repository\\plugin\\AbstractSaver');
     }
 }

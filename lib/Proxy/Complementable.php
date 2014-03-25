@@ -8,9 +8,6 @@
 
 namespace mineichen\entityManager\proxy;
 
-
-use mineichen\entityManager\event\Get;
-
 interface Complementable {
     public function isComplementable($key);
     public function complement(array $data);

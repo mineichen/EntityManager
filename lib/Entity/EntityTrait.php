@@ -5,20 +5,23 @@ namespace mineichen\entityManager\entity;
 use mineichen\entityManager\event;
 use mineichen\entityManager\proxy\ComplementableTrait;
 
-
 trait EntityTrait {
-    private $id;
     use event\DatastoreTrait {set as storeSet; }
     use ComplementableTrait;
 
     public function hasId()
     {
-        return $this->id !== null;
+        return $this->has('id');
     }
-    
+
+    public function getId()
+    {
+        return $this->get('id');
+    }
+
     public function setId($id)
     {
-        $this->id = $id;
+        $this->set('id', $id);
     }
 
     protected function set($key, $value)
@@ -40,10 +43,5 @@ trait EntityTrait {
             $current->off(event\Event::SET, array($this, 'redirectEvent'));
         }
 
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 }

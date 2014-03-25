@@ -44,8 +44,8 @@ class EntityManager
     {
         $this->getRepository($subject->getType())->contains($subject);
     }
-    
-    public function find($type, $id) 
+
+    public function find($type, $id)
     {
         return $this->getRepository($type)->find($id);
     }

@@ -6,8 +6,7 @@
  * Time: 19:22
  */
 
-namespace mineichen\entityManager\repository\Plugin;
-
+namespace mineichen\entityManager\repository\plugin;
 
 use mineichen\entityManager\entity\Managable;
 use mineichen\entityManager\proxy\Complementer;

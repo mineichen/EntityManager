@@ -2,15 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: mineichen
- * Date: 27.04.14
- * Time: 12:57
+ * Date: 29.04.14
+ * Time: 10:45
  */
 
-namespace mineichen\entityManager\repository\Plugin;
+namespace mineichen\entityManager\repository\plugin;
 
 use mineichen\entityManager\action\Action;
 
 interface FlushPlugin extends Plugin {
     public function onFlush(Action $action);
-    public function afterFlush(Action $action);
-} 
+}

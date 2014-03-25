@@ -6,7 +6,7 @@
  * Time: 17:54
  */
 
-namespace mineichen\entityManager\repository\Plugin;
+namespace mineichen\entityManager\repository\plugin;
 
 
 use mineichen\entityManager\action\Action;
@@ -15,7 +15,7 @@ use mineichen\entityManager\entity\Managable;
 use mineichen\entityManager\EntityManager;
 use mineichen\entityManager\Exception;
 
-class DependencyPlugin implements FlushPlugin
+class DependencyPlugin implements ExtendedFlushPlugin
 {
     private $manager;
     private $pendingFlush = [];
@@ -25,7 +25,7 @@ class DependencyPlugin implements FlushPlugin
         $this->manager = $manager;
     }
 
-    public function onFlush(Action $action)
+    public function beforeFlush(Action $action)
     {
         if(in_array($action, $this->pendingFlush, true)) {
             throw new Exception('Infinite loop detected!');

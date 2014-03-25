@@ -2,8 +2,7 @@
 
 namespace mineichen\entityManager;
 
-use mineichen\entityManager\repository\Plugin\DependencyPlugin;
-use mineichen\entityManager\repository\Plugin\Plugin;
+use mineichen\entityManager\repository\plugin;
 
 class RepositoryFactory
 {
@@ -16,13 +15,12 @@ class RepositoryFactory
         $this->defaultPlugins = $defaultPlugins;
     }
     
-    public function add($entityType, Saver $saver, Loader $loader, array $plugins = [])
+    public function add($entityType, Loader $loader, array $plugins = [])
     {
         $repo = new repository\EntityRepository(
             $this->getIdentityMap(),
             $entityType,
             $loader,
-            $saver,
             $this->getActionFactory()
         );
 
@@ -40,7 +38,6 @@ class RepositoryFactory
         foreach ($configs as $config) {
             $this->add(
                 $config['entityType'],
-                $config['saver'],
                 $config['loader'],
                 (array_key_exists('plugins', $config) ? $config['plugins'] : [])
             );
@@ -49,15 +46,15 @@ class RepositoryFactory
 
     protected function getPlugin($name, $loader)
     {
-        if($name instanceof Plugin) {
+        if($name instanceof plugin\Plugin) {
             return $name;
         }
 
         switch($name) {
             case 'Dependency':
-                return new DependencyPlugin($this->manager);
+                return new plugin\DependencyPlugin($this->manager);
             case 'Complementer':
-                return new repository\plugin\ComplementerPlugin(new proxy\TraitComplementer($loader));
+                return new plugin\ComplementerPlugin(new proxy\TraitComplementer($loader));
         }
 
         if (is_string($name)) {

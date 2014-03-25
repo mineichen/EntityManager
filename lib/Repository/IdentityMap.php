@@ -3,8 +3,6 @@
 namespace mineichen\entityManager\repository;
 
 use mineichen\entityManager\action\Action;
-use mineichen\entityManager\ActionPriorityGenerator;
-use mineichen\entityManager\action\Factory;
 use mineichen\entityManager\entity\Managable;
 
 class IdentityMap implements \IteratorAggregate

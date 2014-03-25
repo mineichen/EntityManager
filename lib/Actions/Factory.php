@@ -21,11 +21,19 @@ class Factory
 
     public function getInstanceFor(Managable $subject, $type, Repository $repo)
     {
+        if(!is_string($type)) {
+            var_dump($type); die();
+        }
         if (!array_key_exists($type, $this->actionTypes)) {
             throw new Exception(sprintf('Action Type "%s" is not supported', $type));
         }
         $class = $this->actionTypes[$type];
 
-        return new $class($subject, $repo);
+        switch($type) {
+            case 'create':
+                return new $class($subject, $this->actionTypes['update']);
+            default:
+                return new $class($subject);
+        }
     }
 }

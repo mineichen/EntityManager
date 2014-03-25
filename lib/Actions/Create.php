@@ -3,25 +3,21 @@
 namespace mineichen\entityManager\action;
 
 use mineichen\entityManager\entity\Managable;
-use mineichen\entityManager\repository\EntityRepository;
-use mineichen\entityManager\Saver;
-use mineichen\entityManager\repository\IdentityMap;
 
 class Create implements Action
 {
-    private $entityRepository;
+    private $nextActionClass;
     private $subject;
     
-    public function __construct(Managable $subject, EntityRepository $entityRepository)
+    public function __construct(Managable $subject, $nextActionClass)
     {
         $this->subject = $subject;
-        $this->entityRepository = $entityRepository;
+        $this->nextActionClass = $nextActionClass;
     }
 
-    public function performAction(Saver $saver)
+    public function getType()
     {
-        $saver->create($this->subject);
-        $this->entityRepository->attach($this->subject, 'update');
+        return 'create';
     }
     
     public function getSubject()
@@ -32,5 +28,10 @@ class Create implements Action
     public function subjectExistsAfterPerformAction()
     {
         return true;
+    }
+
+    public function getNextAction()
+    {
+        return new $this->nextActionClass($this->subject);
     }
 }
