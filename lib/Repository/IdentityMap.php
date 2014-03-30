@@ -5,13 +5,18 @@ namespace mineichen\entityManager\repository;
 use mineichen\entityManager\action\Action;
 use mineichen\entityManager\entity\Managable;
 
-class IdentityMap implements \IteratorAggregate
+class IdentityMap
 {
     private $actions = [];
     private $subjects = [];
+    private $actionWithId = [];
 
     public function attach(Action $action)
     {
+        if ($this->isIdRegistered($action->getSubject())) {
+            $this->actionWithId[$action->getSubject()->getId()] = $action;
+        }
+
         $i = array_search($action->getSubject(), $this->subjects);
 
         if ($i === false) {
@@ -20,13 +25,30 @@ class IdentityMap implements \IteratorAggregate
             return false;
         }
 
-
         $this->actions[$i] = $action;
         return true;
     }
 
+    public function fetchSubjectForId($id)
+    {
+        if(array_key_exists($id, $this->actionWithId)) {
+            return $this->actionWithId[$id];
+        }
+
+        foreach($this->subjects as $subject) {
+            if($subject->hasId() && $subject->getId() === $id) {
+                return $subject;
+            }
+        }
+        return false;
+    }
+
     public function detach(Managable $subject)
     {
+        if($this->isIdRegistered($subject)) {
+            unset($this->actionWithId[$subject->getId()]);
+            return;
+        }
         $i = $this->getIndex($subject);
         unset($this->actions[$i]);
         unset($this->subjects[$i]);
@@ -34,17 +56,20 @@ class IdentityMap implements \IteratorAggregate
 
     public function getActionFor(Managable $subject)
     {
+        if($this->isIdRegistered($subject)) {
+            return $this->actionWithId[$subject->getId()];
+        }
         return $this->actions[$this->getIndex($subject)];
     }
 
     public function hasActionFor(Managable $subject)
     {
-        return in_array($subject, $this->subjects, true);
+        return $this->isIdRegistered($subject) ||  in_array($subject, $this->subjects, true);
     }
 
-    public function getIterator()
+    public function getActions()
     {
-        return new \ArrayIterator(array_values($this->subjects));
+        return array_merge($this->actions, $this->actionWithId);
     }
 
     private function getIndex(Managable $subject)
@@ -54,5 +79,10 @@ class IdentityMap implements \IteratorAggregate
             throw new Exception('No Action found for type "%s" and id "%s"', $subject->getType() ,$subject->getId());
         }
         return $i;
+    }
+
+    private function isIdRegistered(Managable $subject)
+    {
+        return $subject->hasId() && array_key_exists($subject->getId(), $this->actionWithId);
     }
 }

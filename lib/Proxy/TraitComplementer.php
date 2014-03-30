@@ -20,7 +20,7 @@ class TraitComplementer implements Complementer
 
         if ($subject->isComplementable($event->getKey())) {
             $subject->complement(
-                $this->loader->find($subject->getId())->asArray()
+                $this->loader->load($subject->getId())->asArray()
             );
         }
     }

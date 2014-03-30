@@ -42,7 +42,6 @@ spl_autoload_register(
                 'mineichen\\entitymanager\\repository\\plugin\\flushplugin' => '/Repository/Plugin/FlushPlugin.php',
                 'mineichen\\entitymanager\\repository\\plugin\\manageplugin' => '/Repository/Plugin/ManagePlugin.php',
                 'mineichen\\entitymanager\\repository\\plugin\\plugin' => '/Repository/Plugin/Plugin.php',
-                'mineichen\\entitymanager\\repository\\plugin\\saver' => '/Repository/Plugin/Saver.php',
                 'mineichen\\entitymanager\\repository\\repository' => '/Repository/Repository.php',
                 'mineichen\\entitymanager\\repositoryfactory' => '/RepositoryFactory.php'
             );

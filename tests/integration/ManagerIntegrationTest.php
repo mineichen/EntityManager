@@ -15,7 +15,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = $this->createEntityManager(array('Bar', $loader));
                 
         $loader->expects($this->once())
-            ->method('find')
+            ->method('load')
             ->with(10)
             ->will($this->returnValue($entity));
         
@@ -37,7 +37,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = $this->createEntityManager(array('Bar', $loader));
         
         $loader->expects($this->once())
-            ->method('find')
+            ->method('load')
             ->with(10)
             ->will($this->returnValue($entity));
         
@@ -62,7 +62,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $manager = $this->createEntityManager(array('Bar', $loader, [$saver]));
         
         $loader->expects($this->once())
-            ->method('find')
+            ->method('load')
             ->with(10)
             ->will($this->returnValue($entity));
         
@@ -121,11 +121,11 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
 
         $loader->expects($this->once())
-            ->method('findBy')
+            ->method('loadBy')
             ->will($this->returnValue(array($foo)));
 
         $loader->expects($this->once())
-            ->method('find')
+            ->method('load')
             ->with(1234)
             ->will($this->returnValue($completeFoo));
 
@@ -158,7 +158,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         );
 
         $loader->expects($this->once())
-            ->method('findBy')
+            ->method('loadBy')
             ->will($this->returnValue(array($foo, $foo2)));
 
 
@@ -208,7 +208,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         );
 
         $loader->expects($this->exactly(2))
-            ->method('find')
+            ->method('load')
             ->with($returnFoo->getId())
             ->will($this->returnValue($returnFoo));
 
@@ -238,11 +238,11 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $loader = $this->mockLoader();
 
         $loader->expects($this->once())
-            ->method('findBy')
+            ->method('loadBy')
             ->will($this->returnValue(array($foo)));
 
         $loader->expects($this->once())
-            ->method('find')
+            ->method('load')
             ->with($foo->getId())
             ->will($this->returnValue($completeFoo));
 

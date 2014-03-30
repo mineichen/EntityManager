@@ -4,6 +4,6 @@ namespace mineichen\entityManager;
 
 interface Loader 
 {
-    public function find($id);
-    public function findBy(array $options);
+    public function load($id);
+    public function loadBy();
 }

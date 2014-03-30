@@ -2,6 +2,7 @@
 
 namespace mineichen\entityManager\repository;
 
+use mineichen\entityManager\action\Action;
 use mineichen\entityManager\action\Factory;
 use mineichen\entityManager\entity\Managable;
 use mineichen\entityManager\ActionPriorityGenerator;
@@ -22,16 +23,14 @@ class EntityRepository implements Repository
      */
     private $entityType;
 
+    /**
+     * @var \mineichen\entityManager\action\Factory
+     */
     private $actionFactory;
 
     private $managePlugins = [];
     private $flushPlugins = [];
     private $extendedFlushPlugins = [];
-    private $actionTypes = [
-        'create' => 'mineichen\\entityManager\\action\\Create',
-        'update' => 'mineichen\\entityManager\\action\\Update',
-        'delete' => 'mineichen\\entityManager\\action\\Delete',
-    ];
 
     /**
      * @param IdentityMap $identityMap
@@ -46,6 +45,9 @@ class EntityRepository implements Repository
         $this->actionFactory = $actionFactory;
     }
 
+    /**
+     * @param plugin\Plugin $plugin
+     */
     public function addPlugin(plugin\Plugin $plugin)
     {
         if ($plugin instanceof plugin\ManagePlugin) {
@@ -60,6 +62,7 @@ class EntityRepository implements Repository
             $this->flushPlugins[] = $plugin;
         }
     }
+
 
     /**
      * @return string
@@ -84,17 +87,33 @@ class EntityRepository implements Repository
         $subject = $this->fetchSubjectForId($id);
 
         if ($subject === false) {
-            $subject = $this->loader->find($id);
+            $subject = $this->loader->load($id);
             $this->attach($subject, 'update');
         }
 
         return $subject;
     }
 
-    public function findBy(array $config)
+    /**
+     * Redirect Unknown Method-Calls to Loader
+     *
+     * @param $method
+     * @param array $args
+     * @return array
+     */
+    public function __call($method, array $args)
+    {
+        if(substr($method, 0, 4) === 'find') {
+            return $this->callLoader('load' . substr($method, 4), $args);
+        }
+
+        throw new Exception(sprintf('Method "%s" is Not implemented', $method));
+    }
+
+    public function callLoader($method, $args)
     {
         return array_map(
-            function($newEntity) {
+            function(Managable $newEntity) {
                 $existing = $this->fetchSubjectForId($newEntity->getId());
                 if ($existing !== false) {
                     return $existing;
@@ -103,20 +122,24 @@ class EntityRepository implements Repository
                 $this->attach($newEntity, 'update');
                 return $newEntity;
             },
-            $this->loader->findBy($config)
+            call_user_func_array([$this->loader, $method], $args)
         );
     }
 
     public function flush()
     {
-        foreach($this->identityMap as $subject) {
-            $this->flushEntity($subject);
+        foreach($this->identityMap->getActions() as $action) {
+            $this->flushAction($action);
         }
     }
 
     public function flushEntity(Managable $subject)
     {
-        $action = $this->identityMap->getActionFor($subject);
+        return $this->flushAction($this->identityMap->getActionFor($subject));
+    }
+
+    private function flushAction(Action $action)
+    {
         foreach($this->extendedFlushPlugins as $plugin) {
             $plugin->beforeFlush($action);
         }
@@ -130,18 +153,13 @@ class EntityRepository implements Repository
         if($action->subjectExistsAfterPerformAction()) {
             $this->identityMap->attach($action->getNextAction());
         } else {
-            $this->detach($subject);
+            $this->detach($action->getSubject());
         }
     }
 
     private function fetchSubjectForId($id)
     {
-        foreach($this->identityMap as $subject) {
-            if($subject->hasId() && $subject->getId() === $id) {
-                return $subject;
-            }
-        }
-        return false;
+        return $this->identityMap->fetchSubjectForId($id);
     }
     
 

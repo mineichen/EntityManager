@@ -24,7 +24,7 @@ class EntityManager
         
         return $this->repos[$type];
     }
-    
+
     public function hasRepository($type)
     {
         return array_key_exists($type, $this->repos);
@@ -50,9 +50,12 @@ class EntityManager
         return $this->getRepository($type)->find($id);
     }
 
-    public function findBy($type, array $config)
+    public function __call($method, array $args)
     {
-        return $this->getRepository($type)->findBy($config);
+        return call_user_func_array(
+            [$this->getRepository(array_shift($args)), $method],
+            $args
+        );
     }
     
     public function isRegistered(entity\Managable $subject)

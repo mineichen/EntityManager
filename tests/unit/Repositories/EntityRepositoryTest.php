@@ -33,7 +33,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->entityType));
 
         $this->loader->expects($this->once())
-            ->method('findBy')
+            ->method('loadBy')
             ->will($this->returnValue(array($subject)));
 
         $this->actionFactory
@@ -47,9 +47,9 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
             ->with($this->isInstanceOf('mineichen\\entityManager\\action\\Action'));
 
         $this->identityMap
-            ->expects($this->atLeastOnce())
-            ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator([])));
+            ->expects($this->once())
+            ->method('fetchSubjectForId')
+            ->will($this->returnValue(false));
 
         $this->repository->findBy(array());
     }
