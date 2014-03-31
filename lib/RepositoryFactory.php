@@ -54,7 +54,7 @@ class RepositoryFactory
             case 'Dependency':
                 return new plugin\DependencyPlugin($this->manager);
             case 'Complementer':
-                return new plugin\ComplementerPlugin(new proxy\TraitComplementer($loader));
+                return new proxy\ComplementerPlugin(new proxy\TraitComplementer($loader));
         }
 
         if (is_string($name)) {
