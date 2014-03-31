@@ -6,16 +6,7 @@ use mineichen\entityManager\repository\plugin;
 
 class RepositoryFactory
 {
-    private $manager;
-    private $defaultPlugins;
-
-    public function __construct(EntityManager $manager, array $defaultPlugins = ['Dependency'])
-    {
-        $this->manager = $manager;
-        $this->defaultPlugins = $defaultPlugins;
-    }
-    
-    public function add($entityType, Loader $loader, array $plugins = [])
+    public function create($entityType, Loader $loader, array $plugins = [])
     {
         $repo = new repository\EntityRepository(
             $this->getIdentityMap(),
@@ -24,44 +15,20 @@ class RepositoryFactory
             $this->getActionFactory()
         );
 
-        foreach(array_merge($this->defaultPlugins, $plugins) as $plugin) {
-            $repo->addPlugin($this->getPlugin($plugin, $loader));
+        foreach($plugins as $plugin) {
+            $repo->addPlugin($plugin);
         }
-
-        $this->manager->addRepository($repo);
 
         return $repo;
     }
 
-    public function addWithConfig(array $configs)
+    public function createWithConfig(array $config)
     {
-        foreach ($configs as $config) {
-            $this->add(
-                $config['entityType'],
-                $config['loader'],
-                (array_key_exists('plugins', $config) ? $config['plugins'] : [])
-            );
-        }
-    }
-
-    protected function getPlugin($name, $loader)
-    {
-        if($name instanceof plugin\Plugin) {
-            return $name;
-        }
-
-        switch($name) {
-            case 'Dependency':
-                return new plugin\DependencyPlugin($this->manager);
-            case 'Complementer':
-                return new proxy\ComplementerPlugin(new proxy\TraitComplementer($loader));
-        }
-
-        if (is_string($name)) {
-            throw new Exception(sprintf('Instance for "%s" not found', $name));
-        }
-
-        throw new Exception('Expect $type to be String');
+        return $this->create(
+            $config['entityType'],
+            $config['loader'],
+            (array_key_exists('plugins', $config) ? $config['plugins'] : [])
+        );
     }
 
     protected function getIdentityMap()

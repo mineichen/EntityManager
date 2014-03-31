@@ -3,6 +3,7 @@
 namespace mineichen\entityManager;
 
 use mineichen\entityManager\repository\EntityRepository;
+use mineichen\entityManager\repository\plugin\Plugin;
 
 class EntityManager
 {
@@ -10,10 +11,23 @@ class EntityManager
      * @var array
      */
     private $repos = array();
+    private $plugins = array();
 
     public function addRepository(EntityRepository $repo)
     {
+        foreach($this->plugins as $plugin) {
+            $repo->addPlugin($plugin);
+        }
         $this->repos[$repo->getEntityType()] = $repo;
+        return $repo;
+    }
+
+    public function addPlugin(Plugin $plugin)
+    {
+        foreach($this->repos as $repo) {
+            $repo->addPlugin($plugin);
+        }
+        $this->plugins[] = $plugin;
     }
 
     public function getRepository($type)

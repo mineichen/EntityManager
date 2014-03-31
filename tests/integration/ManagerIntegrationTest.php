@@ -2,6 +2,9 @@
 
 namespace mineichen\entityManager;
 
+use mineichen\entityManager\proxy\ComplementerPlugin;
+use mineichen\entityManager\proxy\TraitComplementer;
+use mineichen\entityManager\repository\plugin\DependencyPlugin;
 use mineichen\entityManager\repository\plugin\Plugin;
 
 class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
@@ -116,7 +119,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
         $loader = $this->mockLoader();
 
         $manager = $this->createEntityManager(
-            array('Foo', $loader, ['Complementer'])
+            array('Foo', $loader, [new ComplementerPlugin(new TraitComplementer($loader))])
         );
 
 
@@ -247,7 +250,7 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($completeFoo));
 
         $manager = $this->createEntityManager(
-            array('Foo', $loader, ['Complementer', $plugin])
+            array('Foo', $loader, [new ComplementerPlugin(new TraitComplementer($loader)), $plugin])
         );
 
         $entity = $manager->findBy('Foo', [])[0];
@@ -279,18 +282,21 @@ class ManagerIntegrationTest extends \PHPUnit_Framework_TestCase
 
     private function createEntityManager()
     {
-        $config = array();
-        
+        $manager = new EntityManager();
+        $manager->addPlugin(new DependencyPlugin($manager));
+        $repoFactory = new RepositoryFactory($manager);
+
         foreach (func_get_args() as $arg) {
-            $config[]  = array(
-                'entityType' => $arg[0],
-                'loader' => $arg[1],
-                'plugins' => array_key_exists(2, $arg) ? $arg[2] : []
+            $manager->addRepository(
+                $repoFactory->createWithConfig([
+                    'entityType' => $arg[0],
+                    'loader' => $arg[1],
+                    'plugins' => array_key_exists(2, $arg) ? $arg[2] : []
+                ])
             );
         }
 
-        $manager = new EntityManager();
-        (new RepositoryFactory($manager))->addWithConfig($config);
+
         return $manager;
     }
 
